@@ -1,10 +1,20 @@
 Package: seahorse
-Title: What the Package Does (One Line, Title Case)
+Title: Tools for Analyzing Seahorse Bioenergetic Data
 Version: 0.0.0.9000
 Authors@R: 
-    person("William", "Oldham", , "wm.oldham@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0003-3029-4866"))
-Description: What the package does (one paragraph).
+    person(
+        given = "William", 
+        family = "Oldham", 
+        middle = "M.", 
+        email = "wm.oldham@gmail.com", 
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0003-3029-4866")
+    )
+Description: This package provides tools to import Seahorse data from an exported
+    Excel file; calculate OCR, ECAR, and PER from raw data; deal with outlying
+    measurements in both background and experimental wells; calculate various
+    experimental parameters; generate summary summary statistics; and aggregate 
+    multiple experiments. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
