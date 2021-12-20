@@ -1,4 +1,5 @@
 #' @importFrom methods setClass setGeneric setMethod
+#' @importFrom magrittr %>%
 #' @keywords internal
 "_PACKAGE"
 
