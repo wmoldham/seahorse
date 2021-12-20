@@ -6,13 +6,15 @@ setClass(
     path = "character",
     filename = "character",
     time = "POSIXct",
-    config = "list"
+    config = "list",
+    raw = "list"
   ),
   prototype = list(
     path = NA_character_,
     filename = NA_character_,
     time = NA_real_,
-    config = list()
+    config = list(),
+    raw = list()
   )
 )
 
@@ -51,6 +53,7 @@ setMethod(
     .Object@filename <- sub("\\.xlsx", "", basename(path))
     .Object@time <- lubridate::mdy_hms(get_cell(path, "Operation Log", "D2"))
     .Object@config <- init_config(path)
+    .Object@raw <- init_raw(path, .Object@config)
     methods::validObject(.Object)
     .Object
   }
