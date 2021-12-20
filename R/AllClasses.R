@@ -5,12 +5,14 @@ setClass(
   slots = c(
     path = "character",
     filename = "character",
-    time = "POSIXct"
+    time = "POSIXct",
+    config = "list"
   ),
   prototype = list(
     path = NA_character_,
     filename = NA_character_,
-    time = NA_real_
+    time = NA_real_,
+    config = list()
   )
 )
 
@@ -47,7 +49,8 @@ setMethod(
   {
     .Object@path <- path
     .Object@filename <- sub("\\.xlsx", "", basename(path))
-    .Object@time <- get_cell(path, "Operation Log", "D2") %>% lubridate::mdy_hms()
+    .Object@time <- lubridate::mdy_hms(get_cell(path, "Operation Log", "D2"))
+    .Object@config <- init_config(path)
     methods::validObject(.Object)
     .Object
   }
