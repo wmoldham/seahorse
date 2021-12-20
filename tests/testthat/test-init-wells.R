@@ -23,5 +23,4 @@ test_that("wells formatted correctly", {
   expect_error(Seahorse(path, wells = list(well = c(x, "A01"), type = "blank")), regexp = "Duplicate")
   expect_error(Seahorse(path, wells = list(well = x, type = "background")), class = "error_bad_format")
   expect_true("group" %in% names(Seahorse(path)@wells))
-  # expect_identical(wells(x)[["type"]], rep("sample", length(wells(x)[["type"]])))
 })
