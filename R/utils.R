@@ -95,14 +95,14 @@ init_raw <- function(path, config)
     ) %>%
     tidyr::pivot_longer(
       cols = tidyselect::matches("(O2|pH)_"),
-      names_to = c("name", ".value"),
+      names_to = c("sensor", ".value"),
       names_pattern = "(O2|pH)_(.*)"
     ) %>%
     dplyr::mutate(
       fluor = (.data$light - .data$dark) / (.data$ref_light - .data$ref_dark) * .data$ref,
-      name = dplyr::if_else(.data$name == "O2", "OCR", "ECAR")
+      # name = dplyr::if_else(.data$name == "O2", "OCR", "ECAR")
     ) %>%
-    dplyr::arrange(.data$name) %>%
+    dplyr::arrange(.data$sensor) %>%
     suppressMessages()
 
   if (!all(dplyr::near(df$fluor, df$em))) {
@@ -112,4 +112,39 @@ init_raw <- function(path, config)
     )
   }
   df
+}
+
+init_wells <- function(wells)
+{
+  if (!("well" %in% names(wells))) {
+    rlang::abort(
+      class = "error_bad_format",
+      message = "Wells must contain a column named 'well'"
+    )
+  }
+
+  if (!("type" %in% names(wells))) {
+    rlang::abort(
+      class = "error_bad_format",
+      message = "Wells must contain a column named 'type'"
+    )
+  }
+
+  if (!all(wells$type %in% c("blank", "sample", "hypoxia"))) {
+    rlang::abort(
+      class = "error_bad_format",
+      message = "Wells column 'type' must contain only: 'blank', 'sample', 'hypoxia'"
+    )
+  }
+
+  df <- tibble::as_tibble(wells)
+
+  if ("group" %in% names(df)) {
+    df
+  } else if (length(setdiff(names(df), c("well", "type"))) == 0) {
+    df <- dplyr::mutate(df, group = .data$type)
+  } else {
+    df <- tidyr::unite(df, "group", -c(.data$well, .data$type), remove = FALSE)
+  }
+  dplyr::mutate(df, group = factor(.data$group))
 }
