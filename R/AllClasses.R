@@ -4,11 +4,13 @@ setClass(
   "Seahorse",
   slots = c(
     path = "character",
-    filename = "character"
+    filename = "character",
+    time = "POSIXct"
   ),
   prototype = list(
-    path = NA_character_
-    # filename = NA_character_
+    path = NA_character_,
+    filename = NA_character_,
+    time = NA_real_
   )
 )
 
@@ -44,7 +46,8 @@ setMethod(
   function(.Object, path)
   {
     .Object@path <- path
-    # .Object@filename <- stringr::str_extract(basename(path), ".*(?=.xlsx)")
+    .Object@filename <- sub("\\.xlsx", "", basename(path))
+    .Object@time <- get_cell(path, "Operation Log", "D2") %>% lubridate::mdy_hms()
     methods::validObject(.Object)
     .Object
   }
