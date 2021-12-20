@@ -1,5 +1,6 @@
 #' @importFrom methods setClass setGeneric setMethod
 #' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #' @keywords internal
 "_PACKAGE"
 
