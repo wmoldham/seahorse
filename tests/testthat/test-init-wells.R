@@ -22,5 +22,6 @@ test_that("wells formatted correctly", {
   x <- stringr::str_c(rep(LETTERS[1:4], each = 6), sprintf("%02d", 1:6))
   expect_error(Seahorse(path, wells = list(well = c(x, "A01"), type = "blank")), regexp = "Duplicate")
   expect_error(Seahorse(path, wells = list(well = x, type = "background")), class = "error_bad_format")
+  expect_true("group" %in% names(Seahorse(path)@wells))
   # expect_identical(wells(x)[["type"]], rep("sample", length(wells(x)[["type"]])))
 })

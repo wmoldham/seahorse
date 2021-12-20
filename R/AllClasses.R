@@ -57,6 +57,10 @@ methods::setValidity(
         msg <- c(msg, "Wells must contain a column named 'type'")
       }
 
+      if (!("group" %in% colnames(wells))) {
+        msg <- c(msg, "Wells must contain a column named 'group'")
+      }
+
       if (!all(stringr::str_detect(wells[["well"]], "^[A-Z]\\d{2}$"))) {
         msg <- c(msg, "Wells column 'well' must match the pattern 'A01'")
       }
@@ -93,7 +97,12 @@ setMethod(
     if (length(wells) == 0)
     {
       well_list <- unique(.Object@raw[["well"]])
-      .Object@wells <- tibble::tibble(well = well_list, type = rep("sample", length(well_list)))
+      .Object@wells <-
+        tibble::tibble(
+          well = well_list,
+          type = rep("sample", length(well_list)),
+          group = factor(type)
+        )
     } else {
       .Object@wells <- init_wells(wells)
     }
