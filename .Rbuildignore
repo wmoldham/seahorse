@@ -1,3 +1,5 @@
+^renv$
+^renv\.lock$
 ^seahorse\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
