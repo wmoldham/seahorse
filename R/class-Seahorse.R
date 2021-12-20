@@ -10,7 +10,8 @@ setClass(
     raw = "list",
     wells = "list",
     stages = "list",
-    norm = "list"
+    norm = "list",
+    unit = "character"
   ),
   prototype = list(
     path = NA_character_,
@@ -20,7 +21,8 @@ setClass(
     raw = list(),
     wells = list(),
     stages = list(),
-    norm = list()
+    norm = list(),
+    unit = NA_character_
   )
 )
 
@@ -29,21 +31,23 @@ Seahorse <- function(
   path,
   wells = list(),
   stages = list(),
-  norm = list()
+  norm = list(),
+  unit = NA_character_
 ){
   methods::new(
     "Seahorse",
     path = path,
     wells = wells,
     stages = stages,
-    norm = norm
+    norm = norm,
+    unit = unit
   )
 }
 
 setMethod(
   "initialize",
   "Seahorse",
-  function(.Object, path, wells, stages, norm)
+  function(.Object, path, wells, stages, norm, unit)
   {
     .Object@path <- path
     .Object@filename <- sub("\\.xlsx", "", basename(path))
@@ -75,10 +79,11 @@ setMethod(
     }
 
     if (length(norm) == 0) {
-      .Object@cells <- tibble::tibble(well = unique(.Object@raw[["well"]]), value = 1)
+      .Object@norm<- tibble::tibble(well = unique(.Object@raw[["well"]]), value = 1)
     } else {
-      .Object@cells <- init_cells(cells)
+      .Object@norm <- init_norm(norm)
     }
+    .Object@unit <- unit
 
     methods::validObject(.Object)
     .Object
@@ -95,6 +100,7 @@ methods::setValidity(
     wells <- object@wells
     raw <- object@raw
     stages <- object@stages
+    norm <- object@norm
 
     # path
     if (!file.exists(path)) {
@@ -147,6 +153,21 @@ methods::setValidity(
         if (!(all(unique(raw[["well"]]) %in% stages[["well"]]))) {
           msg <- c(msg, "Stages must contain an entry for each well or for no wells")
         }
+      }
+    }
+
+    # norm
+    if (length(norm) != 0) {
+      if (!("well" %in% colnames(norm))) {
+        msg <- c(msg, "Norm must contain a column named 'well'")
+      }
+
+      if (!("value" %in% colnames(norm))) {
+        msg <- c(msg, "Norm must contain a column named 'value'")
+      }
+
+      if (!all(stringr::str_detect(norm[["well"]], "^[A-Z]\\d{2}$"))) {
+        msg <- c(msg, "Norm column 'well' must match the pattern 'A01'")
       }
     }
 

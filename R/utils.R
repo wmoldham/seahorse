@@ -136,7 +136,6 @@ init_wells <- function(wells)
       message = "Wells column 'type' must contain only: 'blank', 'sample', 'hypoxia'"
     )
   }
-
   df <- tibble::as_tibble(wells)
 
   if ("group" %in% names(df)) {
@@ -147,4 +146,22 @@ init_wells <- function(wells)
     df <- tidyr::unite(df, "group", -c(.data$well, .data$type), remove = FALSE)
   }
   dplyr::mutate(df, group = factor(.data$group))
+}
+
+init_norm <- function(cells)
+{
+  if (!("well" %in% names(cells))) {
+    rlang::abort(
+      class = "error_bad_format",
+      message = "Cells must contain a column named 'well'"
+    )
+  }
+
+  if (!("value" %in% names(cells))) {
+    rlang::abort(
+      class = "error_bad_format",
+      message = "Cells must contain a column named 'value'"
+    )
+  }
+  tibble::as_tibble(cells)
 }
