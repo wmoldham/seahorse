@@ -8,4 +8,9 @@ test_that("path works", {
   expect_error(Seahorse("test.xlsx"))
 })
 
+test_that("ccf and bf formatted correctly", {
+  expect_error(Seahorse(path, bf = -1), "positive")
+  expect_error(Seahorse(path, ccf = -1), "positive")
+})
+
 

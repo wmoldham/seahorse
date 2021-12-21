@@ -11,7 +11,9 @@ setClass(
     wells = "list",
     stages = "list",
     norm = "list",
-    unit = "character"
+    unit = "character",
+    bf = "numeric",
+    ccf = "numeric"
   ),
   prototype = list(
     path = NA_character_,
@@ -22,7 +24,9 @@ setClass(
     wells = list(),
     stages = list(),
     norm = list(),
-    unit = NA_character_
+    unit = NA_character_,
+    bf = NA_real_,
+    ccf = NA_real_
   )
 )
 
@@ -32,7 +36,9 @@ Seahorse <- function(
   wells = list(),
   stages = list(),
   norm = list(),
-  unit = NA_character_
+  unit = NA_character_,
+  bf = NA_real_,
+  ccf = NA_real_
 ){
   methods::new(
     "Seahorse",
@@ -40,14 +46,16 @@ Seahorse <- function(
     wells = wells,
     stages = stages,
     norm = norm,
-    unit = unit
+    unit = unit,
+    bf = bf,
+    ccf = ccf
   )
 }
 
 setMethod(
   "initialize",
   "Seahorse",
-  function(.Object, path, wells, stages, norm, unit)
+  function(.Object, path, wells, stages, norm, unit, bf, ccf)
   {
     .Object@path <- path
     .Object@filename <- sub("\\.xlsx", "", basename(path))
@@ -85,6 +93,9 @@ setMethod(
     }
     .Object@unit <- unit
 
+    .Object@bf <- bf
+    .Object@ccf <- ccf
+
     methods::validObject(.Object)
     .Object
   }
@@ -101,6 +112,8 @@ methods::setValidity(
     raw <- object@raw
     stages <- object@stages
     norm <- object@norm
+    bf <- object@bf
+    ccf <- object@ccf
 
     # path
     if (!file.exists(path)) {
@@ -169,6 +182,16 @@ methods::setValidity(
       if (!all(stringr::str_detect(norm[["well"]], "^[A-Z]\\d{2}$"))) {
         msg <- c(msg, "Norm column 'well' must match the pattern 'A01'")
       }
+    }
+
+    # bf format
+    if (!is.na(bf) && bf < 0) {
+      msg <- c(msg, "Buffer factor must be positive")
+    }
+
+    # ccf format
+    if (!is.na(ccf) && ccf < 0) {
+      msg <- c(msg, "CO2 correction factor must be positive")
     }
 
     if (is.null(msg)) TRUE else msg
