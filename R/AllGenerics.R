@@ -34,11 +34,11 @@ setGeneric("cells<-", function(x, value) standardGeneric("cells<-"))
 
 #' @rdname Seahorse-class
 #' @export
-setGeneric("unit", function(x) standardGeneric("unit"))
+setGeneric("units", function(x) standardGeneric("units"))
 
 #' @rdname Seahorse-class
 #' @export
-setGeneric("unit<-", function(x, value) standardGeneric("unit<-"))
+setGeneric("units<-", function(x, value) standardGeneric("units<-"))
 
 #' @rdname Seahorse-class
 #' @export

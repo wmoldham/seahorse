@@ -11,7 +11,7 @@ setClass(
     wells = "list",
     stages = "list",
     cells = "list",
-    unit = "character",
+    units = "character",
     bf = "numeric",
     cf = "numeric",
     env = "environment"
@@ -25,7 +25,7 @@ setClass(
     wells = list(),
     stages = list(),
     cells = list(),
-    unit = NA_character_,
+    units = NA_character_,
     bf = NA_real_,
     cf = NA_real_
   )
@@ -37,7 +37,7 @@ Seahorse <- function(
   wells = list(),
   stages = list(),
   cells = list(),
-  unit = NA_character_,
+  units = NA_character_,
   bf = NA_real_,
   cf = NA_real_
 ){
@@ -47,7 +47,7 @@ Seahorse <- function(
     wells = wells,
     stages = stages,
     cells = cells,
-    unit = unit,
+    units = units,
     bf = bf,
     cf = cf
   )
@@ -56,7 +56,7 @@ Seahorse <- function(
 setMethod(
   "initialize",
   "Seahorse",
-  function(.Object, path, wells, stages, cells, unit, bf, cf)
+  function(.Object, path, wells, stages, cells, units, bf, cf)
   {
     .Object@path <- path
     .Object@filename <- sub("\\.xlsx", "", basename(path))
@@ -95,7 +95,7 @@ setMethod(
     } else {
       .Object@cells <- init_cells(cells)
     }
-    .Object@unit <- unit
+    .Object@units <- units
 
     .Object@bf <- bf
     .Object@cf <- cf
@@ -222,20 +222,47 @@ methods::setValidity(
   }
 )
 
-
-
 #' @param x A `Seahorse` object
-#' @describeIn Seahorse-class Getter for 'wells' slot
+#' @describeIn Seahorse-class Getter for 'bf' slot
 #' @export
-setMethod("wells", "Seahorse", function(x) x@wells)
+setMethod("bf", "Seahorse", function(x) x@bf)
 
-#' @describeIn Seahorse-class Setter for 'wells' slot
+#' @describeIn Seahorse-class Setter for 'bf' slot
 #' @param x A `Seahorse` object
 #' @param value Replacement value
 #' @export
-setMethod("wells<-", "Seahorse", function(x, value) {
-  value <- init_wells(value)
-  x@wells <- value
+setMethod("bf<-", "Seahorse", function(x, value) {
+  x@bf <- value
+  methods::validObject(x)
+  x
+})
+
+#' @param x A `Seahorse` object
+#' @describeIn Seahorse-class Getter for 'cells' slot
+#' @export
+setMethod("cells", "Seahorse", function(x) x@cells)
+
+#' @describeIn Seahorse-class Setter for 'cells' slot
+#' @param x A `Seahorse` object
+#' @param value Replacement value
+#' @export
+setMethod("cells<-", "Seahorse", function(x, value) {
+  x@cells <- value
+  methods::validObject(x)
+  x
+})
+
+#' @param x A `Seahorse` object
+#' @describeIn Seahorse-class Getter for 'cf' slot
+#' @export
+setMethod("cf", "Seahorse", function(x) x@cf)
+
+#' @describeIn Seahorse-class Setter for 'cf' slot
+#' @param x A `Seahorse` object
+#' @param value Replacement value
+#' @export
+setMethod("cf<-", "Seahorse", function(x, value) {
+  x@cf <- value
   methods::validObject(x)
   x
 })
@@ -257,61 +284,38 @@ setMethod("stages<-", "Seahorse", function(x, value) {
 })
 
 #' @param x A `Seahorse` object
-#' @describeIn Seahorse-class Getter for 'cells' slot
+#' @describeIn Seahorse-class Getter for 'units' slot
 #' @export
-setMethod("cells", "Seahorse", function(x) x@cells)
+setMethod("units", "Seahorse", function(x) x@units)
 
-#' @describeIn Seahorse-class Setter for 'cells' slot
+#' @describeIn Seahorse-class Setter for 'units' slot
 #' @param x A `Seahorse` object
 #' @param value Replacement value
 #' @export
-setMethod("cells<-", "Seahorse", function(x, value) {
-  x@cells <- value
+setMethod("units<-", "Seahorse", function(x, value) {
+  x@units <- value
   methods::validObject(x)
   x
 })
 
 #' @param x A `Seahorse` object
-#' @describeIn Seahorse-class Getter for 'unit' slot
+#' @describeIn Seahorse-class Getter for 'wells' slot
 #' @export
-setMethod("unit", "Seahorse", function(x) x@unit)
+setMethod("wells", "Seahorse", function(x) x@wells)
 
-#' @describeIn Seahorse-class Setter for 'unit' slot
+#' @describeIn Seahorse-class Setter for 'wells' slot
 #' @param x A `Seahorse` object
 #' @param value Replacement value
 #' @export
-setMethod("unit<-", "Seahorse", function(x, value) {
-  x@unit <- value
+setMethod("wells<-", "Seahorse", function(x, value) {
+  value <- init_wells(value)
+  x@wells <- value
   methods::validObject(x)
   x
 })
 
-#' @param x A `Seahorse` object
-#' @describeIn Seahorse-class Getter for 'bf' slot
-#' @export
-setMethod("bf", "Seahorse", function(x) x@bf)
 
-#' @describeIn Seahorse-class Setter for 'bf' slot
-#' @param x A `Seahorse` object
-#' @param value Replacement value
-#' @export
-setMethod("bf<-", "Seahorse", function(x, value) {
-  x@bf <- value
-  methods::validObject(x)
-  x
-})
 
-#' @param x A `Seahorse` object
-#' @describeIn Seahorse-class Getter for 'cf' slot
-#' @export
-setMethod("cf", "Seahorse", function(x) x@cf)
 
-#' @describeIn Seahorse-class Setter for 'cf' slot
-#' @param x A `Seahorse` object
-#' @param value Replacement value
-#' @export
-setMethod("cf<-", "Seahorse", function(x, value) {
-  x@cf <- value
-  methods::validObject(x)
-  x
-})
+
+

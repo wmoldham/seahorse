@@ -7,5 +7,5 @@ test_that("cells formatted correctly", {
 })
 
 test_that("unit works", {
-  expect_s4_class(Seahorse(path, unit = "cell"), "Seahorse")
+  expect_s4_class(Seahorse(path, units = "cell"), "Seahorse")
 })
