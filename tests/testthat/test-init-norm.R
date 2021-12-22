@@ -1,9 +1,9 @@
-# init-norm.R
+# init-cells.R
 
-test_that("norm formatted correctly", {
-  expect_error(Seahorse(path, norm = list(well = "A01")), "'value")
-  expect_error(Seahorse(path, norm = list(value = 1)), "'well'")
-  expect_error(Seahorse(path, norm = list(well = "A1", value = 1)), "'A01'")
+test_that("cells formatted correctly", {
+  expect_error(Seahorse(path, cells = list(well = "A01")), "'value")
+  expect_error(Seahorse(path, cells = list(value = 1)), "'well'")
+  expect_error(Seahorse(path, cells = list(well = "A1", value = 1)), "'A01'")
 })
 
 test_that("unit works", {

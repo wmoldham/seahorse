@@ -2,6 +2,46 @@
 
 #' @rdname Seahorse-class
 #' @export
+setGeneric("bf", function(x) standardGeneric("bf"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("bf<-", function(x, value) standardGeneric("bf<-"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("blanks", function(x) standardGeneric("blanks"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("blanks<-", function(x, value) standardGeneric("blanks<-"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("cf", function(x) standardGeneric("cf"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("cf<-", function(x, value) standardGeneric("cf<-"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("cells", function(x) standardGeneric("cells"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("cells<-", function(x, value) standardGeneric("cells<-"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("unit", function(x) standardGeneric("unit"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("unit<-", function(x, value) standardGeneric("unit<-"))
+
+#' @rdname Seahorse-class
+#' @export
 setGeneric("stages", function(x) standardGeneric("stages"))
 
 #' @rdname Seahorse-class
@@ -15,3 +55,5 @@ setGeneric("wells", function(x) standardGeneric("wells"))
 #' @rdname Seahorse-class
 #' @export
 setGeneric("wells<-", function(x, value) standardGeneric("wells<-"))
+
+

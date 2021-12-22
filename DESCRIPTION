@@ -36,4 +36,10 @@ Imports:
     lubridate,
     magrittr,
     methods,
-    stringr
+    stringr,
+    pracma,
+    polynom,
+    slider,
+    stats,
+    purrr,
+    cellranger

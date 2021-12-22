@@ -72,13 +72,15 @@ init_raw <- function(path, config)
       O2_ref_light = .data$`O2 Ref Light`,
       O2_ref_dark = .data$`O2 Ref Dark`,
       O2_em = .data$`O2 Corrected Em.`,
+      O2_inst = .data$`O2 (mmHg)`,
       pH_valid = .data$`pH Is Valid`,
       pH_inst = .data$`pH`,
       pH_light = .data$`pH Light`,
       pH_dark = .data$`pH Dark`,
       pH_ref_light = .data$`pH Ref Light`,
       pH_ref_dark = .data$`pH Ref Dark`,
-      pH_em = .data$`pH Corrected Em.`
+      pH_em = .data$`pH Corrected Em.`,
+      pH_inst = .data$pH
     ) %>%
     dplyr::mutate(
       time = lubridate::hms(.data$time),
@@ -99,8 +101,7 @@ init_raw <- function(path, config)
       names_pattern = "(O2|pH)_(.*)"
     ) %>%
     dplyr::mutate(
-      fluor = (.data$light - .data$dark) / (.data$ref_light - .data$ref_dark) * .data$ref,
-      # name = dplyr::if_else(.data$name == "O2", "OCR", "ECAR")
+      fluor = (.data$light - .data$dark) / (.data$ref_light - .data$ref_dark) * .data$ref
     ) %>%
     dplyr::arrange(.data$sensor) %>%
     suppressMessages()
@@ -148,7 +149,7 @@ init_wells <- function(wells)
   dplyr::mutate(df, group = factor(.data$group))
 }
 
-init_norm <- function(cells)
+init_cells <- function(cells)
 {
   if (!("well" %in% names(cells))) {
     rlang::abort(
@@ -164,4 +165,14 @@ init_norm <- function(cells)
     )
   }
   tibble::as_tibble(cells)
+}
+
+init_blanks <- function(wells)
+{
+  x <-
+    tibble::as_tibble(wells) %>%
+    dplyr::filter(.data$type == "blank") %>%
+    dplyr::pull(.data$well)
+
+  list(OCR = x, ECAR = x)
 }
