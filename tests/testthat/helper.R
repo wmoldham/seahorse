@@ -14,4 +14,4 @@ good_stages <- list(measurement = measurement, stage = stage)
 good_cells <- list(well = well, value = 2)
 
 t1 <- Seahorse(path)
-t2 <- Seahorse(path, good_wells, good_stages, good_cells, bf = 2.4, cf = 0.41)
+t2 <- Seahorse(path, good_wells, good_stages, good_cells, bf = 2.4, cf = 0.41, units = "cell")

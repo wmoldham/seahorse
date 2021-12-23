@@ -239,18 +239,18 @@ setMethod(
   }
 )
 
-# setMethod(
-#   "plot",
-#   signature = c(x = "Seahorse", y = "missing"),
-#   function(x, type = c("rates", "levels"), ...) {
-#     type <- rlang::arg_match(type)
-#     switch(
-#       type,
-#       rates = plot_rates(x, ...),
-#       levels = plot_levels(x, ...)
-#     )
-#   }
-# )
+setMethod(
+  "plot",
+  signature = c(x = "Seahorse", y = "character"),
+  function(x, y = c("rates", "levels"), normalize = TRUE, by = c("well", "group"), ...) {
+    type <- rlang::arg_match(y)
+    switch(
+      type,
+      rates = plot_rates(x, normalize = normalize, by = by),
+      levels = plot_levels(x, ...)
+    )
+  }
+)
 
 # accessors ---------------------------------------------------------------
 

@@ -134,16 +134,16 @@ rate_pH <- function(levels, blanks)
     levels %>%
     dplyr::group_by(.data$well, .data$measurement) %>%
     dplyr::slice(-(1:3)) %>%
-    dplyr::summarise(rate = -1000 * 60 * stats::coef(stats::lm(pH ~ time))[[2]])
+    dplyr::summarise(ECAR = -1000 * 60 * stats::coef(stats::lm(pH ~ time))[[2]])
 
   if (!all(is.na(blanks))) {
     ecar <-
       ecar %>%
       dplyr::filter(.data$well %in% blanks) %>%
       dplyr::group_by(.data$measurement) %>%
-      dplyr::summarise(cf = mean(.data$rate)) %>%
+      dplyr::summarise(cf = mean(.data$ECAR)) %>%
       dplyr::right_join(ecar, by = "measurement") %>%
-      dplyr::mutate(ECAR = .data$rate - .data$cf) %>%
+      dplyr::mutate(ECAR = .data$ECAR - .data$cf) %>%
       dplyr::select(.data$well, .data$measurement, .data$ECAR)
   }
   dplyr::arrange(ecar, .data$well, .data$measurement)
