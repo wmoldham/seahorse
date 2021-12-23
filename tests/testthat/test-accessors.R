@@ -33,13 +33,14 @@ test_that("cf works", {
 
 test_that("levels works", {
   expect_s3_class(levels(b), "tbl")
-  expect_equal(names(levels(b)), c("measurement", "well", "time", "O2", "pH"))
+  expect_true(all(c("well", "type", "group", "measurement", "stage", "time", "sensor", "value") %in% names(levels(b))))
 })
 
 test_that("rates works", {
   expect_s3_class(rates(b), "tbl")
-  expect_equal(names(rates(b)), c("well", "measurement", "OCR", "ECAR", "PER"))
-  expect_equal(names(rates(`bf<-`(b, NA_real_))), c("well", "measurement", "OCR", "ECAR"))
+  expect_true(all(c("well", "type", "group", "measurement", "stage", "rate", "value") %in% names(rates(b))))
+  x <- dplyr::filter(rates(`bf<-`(b, NA_real_)), rate == "PER")
+  expect_equal(nrow(x), 0)
 })
 
 test_that("stages works", {

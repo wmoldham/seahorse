@@ -239,13 +239,18 @@ setMethod(
   }
 )
 
-setMethod(
-  "plot",
-  "Seahorse",
-  function(x, y, ...) {
-
-  }
-)
+# setMethod(
+#   "plot",
+#   signature = c(x = "Seahorse", y = "missing"),
+#   function(x, type = c("rates", "levels"), ...) {
+#     type <- rlang::arg_match(type)
+#     switch(
+#       type,
+#       rates = plot_rates(x, ...),
+#       levels = plot_levels(x, ...)
+#     )
+#   }
+# )
 
 # accessors ---------------------------------------------------------------
 
@@ -328,21 +333,50 @@ setMethod("cf<-", "Seahorse", function(x, value) {
 })
 
 #' @param x A `Seahorse` object
-#' @describeIn Seahorse-class Getter for 'stages' slot
+#' @describeIn Seahorse-class Getter for 'levels' slot
 #' @export
 setMethod("levels", "Seahorse", function(x) {
-  dplyr::left_join(x@env$O2_level, x@env$pH_level, by = c("well", "measurement", "time"))
+  if (!("well" %in% names(stages(x)))) {
+    w <- unique(wells(x)[["well"]])
+    s <- tidyr::crossing(well = w, stages(x))
+  } else {
+    s <- stages(x)
+  }
+  dplyr::left_join(wells(x), s, by = c("well")) %>%
+    dplyr::left_join(x@env$O2_level, by = c("well", "measurement")) %>%
+    dplyr::left_join(x@env$pH_level, by = c("well", "measurement", "time")) %>%
+    tidyr::pivot_longer(
+      cols = c(.data$O2, .data$pH),
+      names_to = "sensor",
+      values_to = "value"
+    ) %>%
+    dplyr::arrange(.data$sensor)
 })
 
 #' @param x A `Seahorse` object
-#' @describeIn Seahorse-class Getter for 'stages' slot
+#' @describeIn Seahorse-class Getter for 'rates' slot
 #' @export
 setMethod("rates", "Seahorse", function(x) {
-  df <- dplyr::left_join(x@env$OCR, x@env$ECAR, by = c("well", "measurement"))
-  if (!is.na(x@bf)) {
-    df <- dplyr::mutate(df, PER = ECAR * x@bf * 5.65 * 1.19)
+  if (!("well" %in% names(stages(x)))) {
+    w <- unique(wells(x)[["well"]])
+    s <- tidyr::crossing(well = w, stages(x))
+  } else {
+    s <- stages(x)
   }
-  df
+  df <-
+    dplyr::left_join(wells(x), s, by = c("well")) %>%
+    dplyr::left_join(x@env$OCR, by = c("well", "measurement")) %>%
+    dplyr::left_join(x@env$ECAR, by = c("well", "measurement"))
+  if (!is.na(x@bf)) {
+    df <- dplyr::mutate(df, PER = .data$ECAR * x@bf * 5.65 * 1.19)
+  }
+  tidyr::pivot_longer(
+    df,
+    tidyselect::any_of(c("OCR", "ECAR", "PER")),
+    names_to = "rate",
+    values_to = "value"
+  ) %>%
+    dplyr::arrange(.data$rate)
 })
 
 #' @param x A `Seahorse` object

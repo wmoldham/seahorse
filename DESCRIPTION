@@ -42,4 +42,5 @@ Imports:
     slider,
     stats,
     purrr,
-    cellranger
+    cellranger,
+    ggplot2

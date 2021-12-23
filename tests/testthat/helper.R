@@ -9,7 +9,7 @@ good_wells <- list(well = well, type = type, group = group)
 
 measurement <- 1:12
 stage <- rep(LETTERS[1:4], each = 3)
-good_stages <- expand.grid(well = well, measurement = measurement, stage = stage)
+good_stages <- list(measurement = measurement, stage = stage)
 
 good_cells <- list(well = well, value = 2)
 
