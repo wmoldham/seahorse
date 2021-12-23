@@ -9,23 +9,9 @@ good_wells <- list(well = well, type = type, group = group)
 
 measurement <- 1:12
 stage <- rep(LETTERS[1:4], each = 3)
-good_spans <- expand.grid(well = well, measurement = measurement, stage = stage)
+good_stages <- expand.grid(well = well, measurement = measurement, stage = stage)
 
 good_cells <- list(well = well, value = 2)
 
-rts <-
-  readxl::read_excel(
-    path,
-    sheet = "Rate",
-    range = cellranger::cell_cols("A:F")
-  ) %>%
-  dplyr::select(
-    measurement = Measurement,
-    well = Well,
-    ocr = OCR,
-    ecar = ECAR
-  ) %>%
-  tidyr::pivot_longer(c(ocr, ecar), names_to = "name", values_to = "test")
-
 a <- Seahorse(path)
-b <- Seahorse(path, good_wells, good_spans, good_cells, bf = 2.4, cf = 0.41)
+b <- Seahorse(path, good_wells, good_stages, good_cells, bf = 2.4, cf = 0.41)

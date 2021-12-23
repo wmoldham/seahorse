@@ -238,6 +238,39 @@ setMethod("bf<-", "Seahorse", function(x, value) {
 })
 
 #' @param x A `Seahorse` object
+#' @describeIn Seahorse-class Getter for 'bf' slot
+#' @export
+setMethod("blanks", "Seahorse", function(x) x@env$blanks)
+
+#' @describeIn Seahorse-class Setter for 'bf' slot
+#' @param x A `Seahorse` object
+#' @param value Replacement value
+#' @export
+setMethod("blanks<-", "Seahorse", function(x, value) {
+  if (!all(!is.null(names(value)), names(value) %in% c("OCR", "ECAR"))) {
+    rlang::abort(
+      message = "Format new blanks as 'list(OCR = ..., ECAR = ...)'"
+    )
+  }
+  old_blanks <- blanks(x)
+  changes <- purrr::map2_lgl(old_blanks, value, ~length(setdiff(.x, .y)) != 0)
+  if (sum(changes) == 0) {
+    rlang::warn(message = "Blanks unchanged")
+    return(x)
+  }
+  x@env$blanks <- value
+  methods::validObject(x)
+  if (changes[["OCR"]]){
+    x@env$O2_level <- level_O2(x@raw, x@config, x@env$blanks)
+    x@env$OCR <- rate_O2(x@env$O2_level, x@config)
+  }
+  if (changes[["ECAR"]]){
+    x@env$ECAR <- rate_pH(x@env$pH_level, x@env$blanks)
+  }
+  x
+})
+
+#' @param x A `Seahorse` object
 #' @describeIn Seahorse-class Getter for 'cells' slot
 #' @export
 setMethod("cells", "Seahorse", function(x) x@cells)
