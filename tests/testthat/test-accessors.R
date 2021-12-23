@@ -31,6 +31,17 @@ test_that("cf works", {
   expect_equal(cf(`cf<-`(b, 1)), 1)
 })
 
+test_that("levels works", {
+  expect_s3_class(levels(b), "tbl")
+  expect_equal(names(levels(b)), c("measurement", "well", "time", "O2", "pH"))
+})
+
+test_that("rates works", {
+  expect_s3_class(rates(b), "tbl")
+  expect_equal(names(rates(b)), c("well", "measurement", "OCR", "ECAR", "PER"))
+  expect_equal(names(rates(`bf<-`(b, NA_real_))), c("well", "measurement", "OCR", "ECAR"))
+})
+
 test_that("stages works", {
   expect_equal(stages(b), tibble::as_tibble(good_stages))
   expect_error(stages(b) <- list(stage = rep("basal", 12)), "measurement")

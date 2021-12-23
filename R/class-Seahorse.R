@@ -239,6 +239,14 @@ setMethod(
   }
 )
 
+setMethod(
+  "plot",
+  "Seahorse",
+  function(x, y, ...) {
+
+  }
+)
+
 # accessors ---------------------------------------------------------------
 
 #' @param x A `Seahorse` object
@@ -317,6 +325,24 @@ setMethod("cf<-", "Seahorse", function(x, value) {
   x@cf <- value
   methods::validObject(x)
   x
+})
+
+#' @param x A `Seahorse` object
+#' @describeIn Seahorse-class Getter for 'stages' slot
+#' @export
+setMethod("levels", "Seahorse", function(x) {
+  dplyr::left_join(x@env$O2_level, x@env$pH_level, by = c("well", "measurement", "time"))
+})
+
+#' @param x A `Seahorse` object
+#' @describeIn Seahorse-class Getter for 'stages' slot
+#' @export
+setMethod("rates", "Seahorse", function(x) {
+  df <- dplyr::left_join(x@env$OCR, x@env$ECAR, by = c("well", "measurement"))
+  if (!is.na(x@bf)) {
+    df <- dplyr::mutate(df, PER = ECAR * x@bf * 5.65 * 1.19)
+  }
+  df
 })
 
 #' @param x A `Seahorse` object

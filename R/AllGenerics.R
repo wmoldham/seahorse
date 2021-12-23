@@ -34,11 +34,11 @@ setGeneric("cells<-", function(x, value) standardGeneric("cells<-"))
 
 #' @rdname Seahorse-class
 #' @export
-setGeneric("units", function(x) standardGeneric("units"))
+setGeneric("levels", function(x) standardGeneric("levels"))
 
 #' @rdname Seahorse-class
 #' @export
-setGeneric("units<-", function(x, value) standardGeneric("units<-"))
+setGeneric("rates", function(x) standardGeneric("rates"))
 
 #' @rdname Seahorse-class
 #' @export
@@ -47,6 +47,14 @@ setGeneric("stages", function(x) standardGeneric("stages"))
 #' @rdname Seahorse-class
 #' @export
 setGeneric("stages<-", function(x, value) standardGeneric("stages<-"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("units", function(x) standardGeneric("units"))
+
+#' @rdname Seahorse-class
+#' @export
+setGeneric("units<-", function(x, value) standardGeneric("units<-"))
 
 #' @rdname Seahorse-class
 #' @export
