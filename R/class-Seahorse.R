@@ -222,6 +222,25 @@ methods::setValidity(
   }
 )
 
+
+# methods -----------------------------------------------------------------
+
+setMethod(
+  "show",
+  "Seahorse",
+  function(object) {
+    cat(is(object), "Experiment\n")
+    cat("File:", object@filename, "\n")
+    cat("Run: ", as.character(object@time), "\n")
+    cat("Blanks:\n")
+    cat("- OCR:  ", object@env$blanks$OCR, "\n")
+    cat("- ECAR: ", object@env$blanks$ECAR, "\n")
+    cat("Outliers:\n")
+  }
+)
+
+# accessors ---------------------------------------------------------------
+
 #' @param x A `Seahorse` object
 #' @describeIn Seahorse-class Getter for 'bf' slot
 #' @export
