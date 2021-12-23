@@ -350,6 +350,7 @@ setMethod("levels", "Seahorse", function(x) {
       names_to = "sensor",
       values_to = "value"
     ) %>%
+    dplyr::mutate(sensor = factor(sensor, levels = c("O2", "pH"))) %>%
     dplyr::arrange(.data$sensor)
 })
 
@@ -376,6 +377,7 @@ setMethod("rates", "Seahorse", function(x) {
     names_to = "rate",
     values_to = "value"
   ) %>%
+    dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "PER", "ECAR"))) %>%
     dplyr::arrange(.data$rate)
 })
 

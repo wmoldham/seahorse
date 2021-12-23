@@ -14,10 +14,18 @@ plot_time <- function(df, x, y, group)
     ggplot2::geom_point()
 }
 
-### TODO: YOU ARE HERE ###
-
-plot_rates <- function(x)
+plot_rates <- function(x, normalize = TRUE)
 {
+  if (is.na(bf(x))) {
+    a <- c("OCR", "ECAR")
+  } else {
+    a <- c("OCR", "PER")
+  }
+
+
+
   rates(x) %>%
-    tidyr::pivot_longer(cols = c(OCR, ECAR), names_to = "measurement", values_to = )
+    dplyr::filter(rate %in% a) %>%
+    plot_time(x = measurement, y = value, group = group) +
+    ggplot2::facet_wrap(~ rate, ncol = 1, scales = "free_y")
 }
