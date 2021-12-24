@@ -1,6 +1,6 @@
 # helper.R
 
-path <- system.file("inst/extdata/test_1.xlsx", package = "seahorse", mustWork = TRUE)
+path <- system.file("extdata/test_1.xlsx", package = "seahorse", mustWork = TRUE)
 
 well <- stringr::str_c(rep(LETTERS[1:4], each = 6), sprintf("%02d", 1:6))
 type <- c("blank", rep("sample", 8), "blank", rep("sample", 4), "blank", rep("sample", 8), "blank")

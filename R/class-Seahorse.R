@@ -229,7 +229,7 @@ setMethod(
   "show",
   "Seahorse",
   function(object) {
-    cat(is(object), "Experiment\n")
+    cat(methods::is(object), "Experiment\n")
     cat("File:", object@filename, "\n")
     cat("Run: ", as.character(object@time), "\n")
     cat("Blanks:\n")
@@ -247,7 +247,7 @@ setMethod(
     switch(
       type,
       rates = plot_rates(x, normalize = normalize, by = by),
-      levels = plot_levels(x, ...)
+      levels = plot_levels(x, by = by)
     )
   }
 )
@@ -350,7 +350,7 @@ setMethod("levels", "Seahorse", function(x) {
       names_to = "sensor",
       values_to = "value"
     ) %>%
-    dplyr::mutate(sensor = factor(sensor, levels = c("O2", "pH"))) %>%
+    dplyr::mutate(sensor = factor(.data$sensor, levels = c("O2", "pH"))) %>%
     dplyr::arrange(.data$sensor)
 })
 
