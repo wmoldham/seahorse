@@ -6,8 +6,11 @@
 setClass(
   "Seahorse",
   slots = c(
-    path = "character",
-    filename = "character"
+    path =     "character",
+    filename = "character",
+    time =     "POSIXct",
+    config =   "list",
+    raw =      "list"
   )
 )
 
@@ -35,6 +38,9 @@ setMethod(
   ) {
     .Object@path <- path
     .Object@filename <- sub("\\.xlsx", "", basename(path))
+    .Object@time <- lubridate::mdy_hms(get_cell(path, "Operation Log", "D2"))
+    .Object@config <- init_config(path)
+    .Object@raw <- init_raw(path, .Object@config)
     methods::validObject(.Object)
     .Object
   }
