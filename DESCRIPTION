@@ -1,10 +1,15 @@
 Package: seahorse
-Title: What the Package Does (One Line, Title Case)
+Title: Analyze Seahorse Bioenergetic Data
 Version: 0.0.0.9000
 Authors@R: 
-    person("William", "Oldham", , "wm.oldham@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0003-3029-4866"))
-Description: What the package does (one paragraph).
+    person(
+        first = "William", 
+        last = "Oldham", 
+        email = "wm.oldham@gmail.com", 
+        role = c("aut", "cre"),
+        comment = c(ORCID = "0000-0003-3029-4866")
+    )
+Description: Facilitate the analysis of Seahorse bioenergetic data. 
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
