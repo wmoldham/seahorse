@@ -40,3 +40,37 @@ test_that("init_wells works", {
     "Wells column 'well' contains rows not in the experiment"
   )
 })
+
+test_that("init_stages works", {
+  x <- Seahorse(.path)
+  expect_snapshot(init_stages(stages = list(), x = x))
+  expect_true("well" %in% names(Seahorse(.path)@stages))
+  expect_error(
+    init_stages(stages = list(measurement = 1)),
+    "Stages must contain a column named 'stage'"
+  )
+  expect_error(
+    init_stages(stages = list(stage = 1)),
+    "Stages must contain a column named 'measurement'"
+  )
+  expect_error(
+    Seahorse(.path, stages = list(measurement = 1:11, stage = "basal")),
+    "Each measurement must have a stage"
+  )
+  expect_error(
+    Seahorse(.path, stages = list(measurement = 1:13, stage = "basal")),
+    "Stages 'measurement' has values missing from the experiment"
+  )
+  l <- list(measurement = 1:12, stage = "basal")
+  expect_error(
+    Seahorse(.path, stages = c(l, list(well = rep("A01", 12)))),
+    "Stages must contain an entry for each well"
+  )
+  expect_error(
+    Seahorse(.path, stages = c(l, list(well = rep("E01", 12)))),
+    "Stages 'well' has values missing from the experiment"
+  )
+
+
+
+})

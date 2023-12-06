@@ -28,3 +28,23 @@
         <chr> <chr>  <fct>
       1 A01   sample A    
 
+# init_stages works
+
+    Code
+      init_stages(stages = list(), x = x)
+    Output
+      # A tibble: 288 x 3
+         measurement stage well 
+               <dbl> <chr> <chr>
+       1           1 basal A01  
+       2           1 basal A02  
+       3           1 basal A03  
+       4           1 basal A04  
+       5           1 basal A05  
+       6           1 basal A06  
+       7           1 basal B01  
+       8           1 basal B02  
+       9           1 basal B03  
+      10           1 basal B04  
+      # i 278 more rows
+

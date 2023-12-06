@@ -180,3 +180,31 @@ init_wells <- function(wells, x = NULL) {
     }}() |>
     dplyr::relocate("group", .after = tidyselect::last_col())
 }
+
+
+init_stages <- function(stages, x = NULL) {
+  if (length(stages) == 0) {
+    out <-
+      x@raw |>
+      dplyr::select("measurement") |>
+      dplyr::distinct() |>
+      dplyr::mutate(stage = "basal") |>
+      tidyr::crossing(well = x@wells$well)
+    return(out)
+  }
+
+  # check format
+  if ("stage" %nin% names(stages)) {
+    rlang::abort("Stages must contain a column named 'stage'")
+  }
+  if ("measurement" %nin% names(stages)) {
+    rlang::abort("Stages must contain a column named 'measurement'")
+  }
+
+  out <- tibble::as_tibble(stages)
+  if ("well" %nin% names(out) & !is.null(x)) {
+    tidyr::crossing(out, well = x@wells$well)
+  } else {
+    out
+  }
+}

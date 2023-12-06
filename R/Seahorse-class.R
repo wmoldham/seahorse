@@ -11,7 +11,8 @@ setClass(
     time =     "POSIXct",
     config =   "list",
     raw =      "list",
-    wells =    "list"
+    wells =    "list",
+    stages =   "list"
   )
 )
 
@@ -20,12 +21,14 @@ setClass(
 
 Seahorse <- function(
     path,
-    wells = list()
+    wells = list(),
+    stages = list()
 ) {
   methods::new(
     "Seahorse",
     path = path,
-    wells = wells
+    wells = wells,
+    stages = stages
   )
 }
 
@@ -35,7 +38,8 @@ Seahorse <- function(
 setMethod("initialize", "Seahorse", function(
     .Object,
     path,
-    wells
+    wells,
+    stages
 ) {
   .Object@path <- path
   .Object@filename <- sub("\\.xlsx", "", basename(path))
@@ -43,10 +47,10 @@ setMethod("initialize", "Seahorse", function(
   .Object@config <- init_config(path)
   .Object@raw <- init_raw(path, .Object@config)
   .Object@wells <- init_wells(wells, .Object)
+  .Object@stages <- init_stages(stages, .Object)
   methods::validObject(.Object)
   .Object
-}
-)
+})
 
 
 # validate ----------------------------------------------------------------
@@ -81,6 +85,27 @@ methods::setValidity("Seahorse", function(object) {
   }
   if (!all(wells[["type"]] %in% c("blank", "sample", "hypoxia"))) {
     msg <- c(msg, "Wells column 'type' must contain only: 'blank', 'sample', 'hypoxia'")
+  }
+
+  # stages
+  stages <- object@stages
+  if ("measurement" %nin% colnames(stages)) {
+    msg <- c(msg, "Stages must contain a column named 'measurement'")
+  }
+  if ("stage" %nin% colnames(stages)) {
+    msg <- c(msg, "Stages must contain a column named 'stage'")
+  }
+  if (!(all(unique(raw[["measurement"]]) %in% stages[["measurement"]]))) {
+    msg <- c(msg, "Each measurement must have a stage")
+  }
+  if (!(all(unique(stages[["measurement"]]) %in% raw[["measurement"]]))) {
+    msg <- c(msg, "Stages 'measurement' has values missing from the experiment")
+  }
+  if (!(all(unique(raw[["well"]]) %in% stages[["well"]]))) {
+    msg <- c(msg, "Stages must contain an entry for each well")
+  }
+  if (!(all(unique(stages[["well"]]) %in% raw[["well"]]))) {
+    msg <- c(msg, "Stages 'well' has values missing from the experiment")
   }
 
   if (is.null(msg)) TRUE else msg
