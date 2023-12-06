@@ -70,31 +70,45 @@ test_that("init_stages works", {
     Seahorse(.path, stages = c(l, list(well = rep("E01", 12)))),
     "Stages 'well' has values missing from the experiment"
   )
+})
 
-  test_that("init_cells works", {
-    expect_error(
-      init_cells(cells = list(value = 1)),
-      "Cells must contain a column named 'well'"
-    )
-    expect_error(
-      init_cells(cells = list(well = "A01")),
-      "Cells must contain a column named 'value'"
-    )
-    expect_error(
-      init_cells(cells = list(well = 1, value = 1)),
-      "Cells column 'well' must match the pattern 'A01'"
-    )
-    expect_error(
-      Seahorse(.path, cells = list(well = "A01", value = 1)),
-      "Cells must contain an entry for each well"
-    )
-    expect_error(
-      Seahorse(.path, cells = list(well = c(wells_24, "E01"), value = 1)),
-      "Cells 'well' has values missing from the experiment"
-    )
-    expect_error(
-      Seahorse(.path, cells = list(well = c(wells_24, "A01"), value = 1)),
-      "Cells column 'well' contains duplicates")
-  })
+test_that("init_cells works", {
+  expect_error(
+    init_cells(cells = list(value = 1)),
+    "Cells must contain a column named 'well'"
+  )
+  expect_error(
+    init_cells(cells = list(well = "A01")),
+    "Cells must contain a column named 'value'"
+  )
+  expect_error(
+    init_cells(cells = list(well = 1, value = 1)),
+    "Cells column 'well' must match the pattern 'A01'"
+  )
+  expect_error(
+    Seahorse(.path, cells = list(well = "A01", value = 1)),
+    "Cells must contain an entry for each well"
+  )
+  expect_error(
+    Seahorse(.path, cells = list(well = c(wells_24, "E01"), value = 1)),
+    "Cells 'well' has values missing from the experiment"
+  )
+  expect_error(
+    Seahorse(.path, cells = list(well = c(wells_24, "A01"), value = 1)),
+    "Cells column 'well' contains duplicates")
+})
 
+test_that("units argument to Seahorse works", {
+  expect_error(Seahorse(.path, units = 1), "numeric")
+})
+
+test_that("bf formatted correctly", {
+  expect_error(Seahorse(.path, bf = -1), "Buffer factor must be positive")
+})
+
+test_that("cf formatted correctly", {
+  expect_error(
+    Seahorse(.path, cf = -1),
+    "CO2 correction factor must be positive"
+  )
 })

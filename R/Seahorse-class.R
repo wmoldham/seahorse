@@ -13,7 +13,10 @@ setClass(
     raw =      "list",
     wells =    "list",
     stages =   "list",
-    cells =    "list"
+    cells =    "list",
+    units =    "character",
+    bf =       "numeric",
+    cf =       "numeric"
   )
 )
 
@@ -24,14 +27,20 @@ Seahorse <- function(
     path,
     wells =  list(),
     stages = list(),
-    cells =  list()
+    cells =  list(),
+    units =  NA_character_,
+    bf =     NA_real_,
+    cf =     NA_real_
 ) {
   methods::new(
     "Seahorse",
     path =   path,
     wells =  wells,
     stages = stages,
-    cells =  cells
+    cells =  cells,
+    units =  units,
+    bf =     bf,
+    cf =     cf
   )
 }
 
@@ -43,7 +52,10 @@ setMethod("initialize", "Seahorse", function(
     path,
     wells,
     stages,
-    cells
+    cells,
+    units,
+    bf,
+    cf
 ) {
   .Object@path <- path
   .Object@filename <- sub("\\.xlsx", "", basename(path))
@@ -53,6 +65,9 @@ setMethod("initialize", "Seahorse", function(
   .Object@wells <- init_wells(wells, .Object)
   .Object@stages <- init_stages(stages, .Object)
   .Object@cells <- init_cells(cells, .Object)
+  .Object@units <- units
+  .Object@bf <- bf
+  .Object@cf <- cf
   methods::validObject(.Object)
   .Object
 })
@@ -132,6 +147,18 @@ methods::setValidity("Seahorse", function(object) {
   }
   if (any(duplicated(cells[["well"]]))) {
     msg <- c(msg, "Cells column 'well' contains duplicates")
+  }
+
+  # bf format
+  bf <- object@bf
+  if (!is.na(bf) && bf <= 0) {
+    msg <- c(msg, "Buffer factor must be positive")
+  }
+
+  # cf format
+  cf <- object@cf
+  if (!is.na(cf) && cf <= 0) {
+    msg <- c(msg, "CO2 correction factor must be positive")
   }
 
   if (is.null(msg)) TRUE else msg
