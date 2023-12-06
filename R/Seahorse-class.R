@@ -12,7 +12,8 @@ setClass(
     config =   "list",
     raw =      "list",
     wells =    "list",
-    stages =   "list"
+    stages =   "list",
+    cells =    "list"
   )
 )
 
@@ -21,14 +22,16 @@ setClass(
 
 Seahorse <- function(
     path,
-    wells = list(),
-    stages = list()
+    wells =  list(),
+    stages = list(),
+    cells =  list()
 ) {
   methods::new(
     "Seahorse",
-    path = path,
-    wells = wells,
-    stages = stages
+    path =   path,
+    wells =  wells,
+    stages = stages,
+    cells =  cells
   )
 }
 
@@ -39,7 +42,8 @@ setMethod("initialize", "Seahorse", function(
     .Object,
     path,
     wells,
-    stages
+    stages,
+    cells
 ) {
   .Object@path <- path
   .Object@filename <- sub("\\.xlsx", "", basename(path))
@@ -48,6 +52,7 @@ setMethod("initialize", "Seahorse", function(
   .Object@raw <- init_raw(path, .Object@config)
   .Object@wells <- init_wells(wells, .Object)
   .Object@stages <- init_stages(stages, .Object)
+  .Object@cells <- init_cells(cells, .Object)
   methods::validObject(.Object)
   .Object
 })
@@ -106,6 +111,27 @@ methods::setValidity("Seahorse", function(object) {
   }
   if (!(all(unique(stages[["well"]]) %in% raw[["well"]]))) {
     msg <- c(msg, "Stages 'well' has values missing from the experiment")
+  }
+
+  # cells
+  cells <- object@cells
+  if ("well" %nin% colnames(cells)) {
+    msg <- c(msg, "Cells must contain a column named 'well'")
+  }
+  if ("value" %nin% colnames(cells)) {
+    msg <- c(msg, "Cells must contain a column named 'value'")
+  }
+  if (!all(stringr::str_detect(cells[["well"]], "^[A-Z]\\d{2}$"))) {
+    msg <- c(msg, "Cells column 'well' must match the pattern 'A01'")
+  }
+  if (!all(raw[["well"]] %in% cells[["well"]])) {
+    msg <- c(msg, "Cells must contain an entry for each well")
+  }
+  if (!all(cells[["well"]] %in% raw[["well"]])) {
+    msg <- c(msg, "Cells 'well' has values missing from the experiment")
+  }
+  if (any(duplicated(cells[["well"]]))) {
+    msg <- c(msg, "Cells column 'well' contains duplicates")
   }
 
   if (is.null(msg)) TRUE else msg

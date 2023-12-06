@@ -71,6 +71,30 @@ test_that("init_stages works", {
     "Stages 'well' has values missing from the experiment"
   )
 
-
+  test_that("init_cells works", {
+    expect_error(
+      init_cells(cells = list(value = 1)),
+      "Cells must contain a column named 'well'"
+    )
+    expect_error(
+      init_cells(cells = list(well = "A01")),
+      "Cells must contain a column named 'value'"
+    )
+    expect_error(
+      init_cells(cells = list(well = 1, value = 1)),
+      "Cells column 'well' must match the pattern 'A01'"
+    )
+    expect_error(
+      Seahorse(.path, cells = list(well = "A01", value = 1)),
+      "Cells must contain an entry for each well"
+    )
+    expect_error(
+      Seahorse(.path, cells = list(well = c(wells_24, "E01"), value = 1)),
+      "Cells 'well' has values missing from the experiment"
+    )
+    expect_error(
+      Seahorse(.path, cells = list(well = c(wells_24, "A01"), value = 1)),
+      "Cells column 'well' contains duplicates")
+  })
 
 })

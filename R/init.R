@@ -208,3 +208,27 @@ init_stages <- function(stages, x = NULL) {
     out
   }
 }
+
+
+init_cells <- function(cells, x = NULL) {
+  if (length(cells) == 0) {
+    out <-
+      x@raw |>
+      dplyr::select("well") |>
+      dplyr::distinct() |>
+      dplyr::mutate(value = 1)
+    return(out)
+  }
+
+  #check format
+  if ("well" %nin% names(cells)) {
+    rlang::abort("Cells must contain a column named 'well'")
+  }
+  if (!all(stringr::str_detect(cells$well, "^[A-Z]\\d{2}$"))) {
+    rlang::abort("Cells column 'well' must match the pattern 'A01'")
+  }
+  if ("value" %nin% names(cells)) {
+    rlang::abort("Cells must contain a column named 'value'")
+  }
+  tibble::as_tibble(cells)
+}
