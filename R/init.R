@@ -123,3 +123,60 @@ init_raw <- function(path, config) {
   }
   df
 }
+
+
+init_wells <- function(wells, x = NULL) {
+  if (length(wells) == 0) {
+    out <-
+      x@raw |>
+      dplyr::select("well", "group") |>
+      dplyr::distinct() |>
+      dplyr::mutate(
+        group = replace(.data$group, .data$group == "Background", "blank"),
+        group = factor(.data$group),
+        group = forcats::fct_relevel(.data$group, "blank", after = Inf),
+        type = ifelse(.data$group == "blank", "blank", "sample")
+      ) |>
+      dplyr::relocate("group", .after = tidyselect::last_col())
+    return(out)
+  }
+
+  # check format
+  if ("well" %nin% names(wells)) {
+    rlang::abort("Wells must contain a column named 'well'")
+  }
+  if ("type" %nin% names(wells)) {
+    rlang::abort("Wells must contain a column named 'type'")
+  }
+  if (!all(wells$type %in% c("blank", "sample", "hypoxia"))) {
+    rlang::abort(
+      "Wells column 'type' must contain only: 'blank', 'sample', 'hypoxia'"
+    )
+  }
+  if (!all(stringr::str_detect(wells$well, "^[A-Z]\\d{2}$"))) {
+    rlang::abort("Wells column 'well' must match the pattern 'A01'")
+  }
+
+  df <- tibble::as_tibble(wells)
+
+  #add group column
+  if ("group" %in% names(df)) {
+    df
+  } else if (length(setdiff(names(df), c("well", "type"))) == 0) {
+    df <- dplyr::mutate(df, group = .data$type)
+  } else {
+    df <- tidyr::unite(df, "group", -c("well", "type"), remove = FALSE)
+  }
+
+  df |>
+    dplyr::mutate(group = factor(.data$group)) |>
+    {\(x) if ("blank" %in% x$group) {
+      dplyr::mutate(
+        x,
+        group = forcats::fct_relevel(.data$group, "blank", after = Inf)
+      )
+    } else {
+      x
+    }}() |>
+    dplyr::relocate("group", .after = tidyselect::last_col())
+}
