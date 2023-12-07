@@ -16,7 +16,8 @@ setClass(
     cells =    "list",
     units =    "character",
     bf =       "numeric",
-    cf =       "numeric"
+    cf =       "numeric",
+    blanks =   "list"
   )
 )
 
@@ -68,6 +69,7 @@ setMethod("initialize", "Seahorse", function(
   .Object@units <- units
   .Object@bf <- bf
   .Object@cf <- cf
+  .Object@blanks <- init_blanks(.Object@wells)
   methods::validObject(.Object)
   .Object
 })

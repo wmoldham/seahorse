@@ -112,3 +112,8 @@ test_that("cf formatted correctly", {
     "CO2 correction factor must be positive"
   )
 })
+
+test_that("blanks formatted correctly", {
+  x <- Seahorse(.path)
+  expect_snapshot(x@blanks)
+})
