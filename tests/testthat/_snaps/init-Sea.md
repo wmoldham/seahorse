@@ -1,7 +1,7 @@
 # init_wells works
 
     Code
-      init_wells(wells = list(), x = x)
+      init_wells(wells = list(), x = sea)
     Output
       # A tibble: 24 x 3
          well  type   group
@@ -31,7 +31,7 @@
 # init_stages works
 
     Code
-      init_stages(stages = list(), x = x)
+      init_stages(stages = list(), x = sea)
     Output
       # A tibble: 288 x 3
          measurement stage well 
@@ -51,7 +51,7 @@
 # blanks formatted correctly
 
     Code
-      x@blanks
+      sea@blanks
     Output
       # A tibble: 8 x 2
         rate  well 

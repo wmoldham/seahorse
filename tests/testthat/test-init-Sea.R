@@ -5,8 +5,7 @@ test_that("Seahorse from path only", {
 })
 
 test_that("init_wells works", {
-  x <- Seahorse(.path)
-  expect_snapshot(init_wells(wells = list(), x = x))
+  expect_snapshot(init_wells(wells = list(), x = sea))
   expect_true("group" %in% names(Seahorse(.path)@wells))
   expect_error(
     init_wells(wells = list(type = "sample")),
@@ -42,8 +41,7 @@ test_that("init_wells works", {
 })
 
 test_that("init_stages works", {
-  x <- Seahorse(.path)
-  expect_snapshot(init_stages(stages = list(), x = x))
+  expect_snapshot(init_stages(stages = list(), x = sea))
   expect_true("well" %in% names(Seahorse(.path)@stages))
   expect_error(
     init_stages(stages = list(measurement = 1)),
@@ -114,6 +112,5 @@ test_that("cf formatted correctly", {
 })
 
 test_that("blanks formatted correctly", {
-  x <- Seahorse(.path)
-  expect_snapshot(x@blanks)
+  expect_snapshot(sea@blanks)
 })
