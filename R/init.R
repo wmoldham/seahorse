@@ -239,7 +239,7 @@ init_blanks <- function(wells) {
     dplyr::filter(.data$type == "blank") |>
     dplyr::select("well") |>
     tidyr::expand_grid(rate = c("OCR", "ECAR")) |>
-    dplyr::mutate(rate = factor(rate, levels = c("OCR", "ECAR"))) |>
+    dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "ECAR"))) |>
     dplyr::select("rate", "well") |>
     dplyr::arrange(.data$rate, .data$well)
 }
