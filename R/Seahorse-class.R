@@ -174,3 +174,35 @@ methods::setValidity("Seahorse", function(object) {
   if (is.null(msg)) TRUE else msg
 })
 
+
+# show --------------------------------------------------------------------
+
+setMethod("show", "Seahorse", function(object) {
+  cat("\n")
+  cat("Seahorse Experiment\n")
+  cat("File:   ", object@filename, "\n")
+  cat("Time:   ", as.character(object@time), "\n")
+  # cat("Blanks ----------------------\n")
+  # cat("- OCR:  ", object@blanks$OCR, "\n")
+  # cat("- ECAR: ", object@blanks$ECAR, "\n")
+  # cat("Outliers --------------------\n")
+  # cat("- OCR:  ", object@outliers$OCR, "\n")
+  # cat("- ECAR: ", object@outliers$ECAR, "\n")
+  # cat("Analyses --------------------\n")
+  # analyses <- list()
+  # if (length(object@mst) != 0) {
+  #   analyses <- c("- Mitochondrial stress\n")
+  # }
+  # if (length(object@gst) != 0) {
+  #   analyses <- c(analyses, "- Glycolysis stress\n")
+  # }
+  # if (length(object@atp) != 0) {
+  #   analyses <- c(analyses, "- ATP production\n")
+  # }
+  # if (length(analyses) == 0) {
+  #   cat("- None\n")
+  # } else {
+  #   purrr::map(analyses, cat)
+  # }
+  cat("\n")
+})
