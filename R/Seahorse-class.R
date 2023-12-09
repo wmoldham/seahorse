@@ -21,7 +21,8 @@ setClass(
     O2 =       "list",
     OCR =      "list",
     pH =       "list",
-    ECAR =     "list"
+    ECAR =     "list",
+    outliers = "list"
   )
 )
 
@@ -78,6 +79,7 @@ setMethod("initialize", "Seahorse", function(
   .Object@OCR <- rate_O2(.Object@O2, .Object@config)
   .Object@pH <- level_pH(.Object@raw, .Object@config)
   .Object@ECAR <- rate_pH(.Object@pH, .Object@blanks)
+  .Object@outliers <- init_outliers(.Object)
   methods::validObject(.Object)
   .Object
 })

@@ -243,3 +243,54 @@ init_blanks <- function(wells) {
     dplyr::select("rate", "well") |>
     dplyr::arrange(.data$rate, .data$well)
 }
+
+
+init_outliers <- function(x) {
+  dplyr::left_join(
+    x@stages,
+    x@wells,
+    by = "well",
+    relationship = "many-to-many"
+  ) |>
+    tidyr::crossing(tibble::tibble(rate = c("OCR", "ECAR"))) |>
+    dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "ECAR"))) |>
+    dplyr::select("rate", "measurement", "group", "well") |>
+    dplyr::arrange(.data$rate, .data$measurement, .data$well) |>
+    dplyr::mutate(outlier = FALSE)
+}
+
+
+find_blank_outliers <- function(x) {
+  outlier <-
+    dplyr::left_join(x@stages, x@wells, by = "well") |>
+    dplyr::filter(.data$type == "blank") |>
+    dplyr::left_join(x@OCR, by = c("well", "measurement")) |>
+    dplyr::left_join(x@ECAR, by = c("well", "measurement")) |>
+    tidyr::pivot_longer(
+      tidyselect::any_of(c("OCR", "ECAR")),
+      names_to = "rate",
+      values_to = "value"
+    ) |>
+    dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "ECAR"))) |>
+    dplyr::arrange(.data$rate, .data$measurement, .data$well) |>
+    dplyr::group_by(.data$rate) |>
+    tidyr::nest() |>
+    dplyr::mutate(
+      model = purrr::map(
+        .data$data,
+        \(x) MASS::rlm(value ~ well, data = x, maxit = 100)
+      ),
+      fit = purrr::map(.data$model, stats::fitted),
+      res = purrr::map(.data$model, stats::residuals),
+      se = purrr::map(.data$res, \(x) x ^ 2)
+    ) |>
+    tidyr::unnest(c("data", "fit", "res", "se")) |>
+    dplyr::group_by(.data$rate, .data$well) |>
+    dplyr::summarise(mse = mean(.data$se, na.rm = TRUE)) |>
+    dplyr::mutate(outlier = msd(.data$mse, n = 2)) |>
+    dplyr::filter(.data$outlier) |>
+    dplyr::select("rate", "well")
+
+  # outliers(x, "add") <- outlier
+  # x
+}

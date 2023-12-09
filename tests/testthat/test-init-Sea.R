@@ -114,3 +114,7 @@ test_that("cf formatted correctly", {
 test_that("blanks formatted correctly", {
   expect_snapshot(sea@blanks)
 })
+
+test_that("outliers formatted correctly", {
+  expect_snapshot(sea@outliers)
+})
