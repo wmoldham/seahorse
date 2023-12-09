@@ -261,8 +261,7 @@ init_outliers <- function(x) {
 
 
 find_blank_outliers <- function(x) {
-  outlier <-
-    dplyr::left_join(x@stages, x@wells, by = "well") |>
+  dplyr::left_join(x@stages, x@wells, by = "well") |>
     dplyr::filter(.data$type == "blank") |>
     dplyr::left_join(x@OCR, by = c("well", "measurement")) |>
     dplyr::left_join(x@ECAR, by = c("well", "measurement")) |>
@@ -278,7 +277,7 @@ find_blank_outliers <- function(x) {
     dplyr::mutate(
       model = purrr::map(
         .data$data,
-        \(x) MASS::rlm(value ~ well, data = x, maxit = 100)
+        \(x) MASS::rlm(value ~ factor(measurement), data = x, maxit = 100)
       ),
       fit = purrr::map(.data$model, stats::fitted),
       res = purrr::map(.data$model, stats::residuals),
@@ -290,7 +289,4 @@ find_blank_outliers <- function(x) {
     dplyr::mutate(outlier = msd(.data$mse, n = 2)) |>
     dplyr::filter(.data$outlier) |>
     dplyr::select("rate", "well")
-
-  # outliers(x, "add") <- outlier
-  # x
 }

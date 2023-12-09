@@ -75,12 +75,15 @@ setMethod("initialize", "Seahorse", function(
   .Object@bf <- bf
   .Object@cf <- cf
   .Object@blanks <- init_blanks(.Object@wells)
+  methods::validObject(.Object)
+
   .Object@O2 <- level_O2(.Object@raw, .Object@config, .Object@blanks)
   .Object@OCR <- rate_O2(.Object@O2, .Object@config)
   .Object@pH <- level_pH(.Object@raw, .Object@config)
   .Object@ECAR <- rate_pH(.Object@pH, .Object@blanks)
   .Object@outliers <- init_outliers(.Object)
-  methods::validObject(.Object)
+  outliers(.Object, "replace") <- find_blank_outliers(.Object)
+
   .Object
 })
 

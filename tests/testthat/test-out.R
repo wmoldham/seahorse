@@ -59,5 +59,6 @@ test_that("outlier assignment errors", {
   expect_warning(
     `outliers<-`(sea, "add", value = tibble::tibble(rate = "OCR", well = "A01")),
     "Outliers unchanged"
-  )
+  ) |>
+    suppressMessages()
 })
