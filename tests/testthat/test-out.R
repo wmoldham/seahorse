@@ -9,7 +9,7 @@ test_that("outliers assignment format", {
     `outliers<-`(sea, "remove", value = 1),
     "Replacement values provided but ignored"
   ) |>
-    suppressWarnings()
+    expect_message("Moving these outlier wells to blanks")
   expect_error(
     `outliers<-`(sea, "add", value = 1),
     "'value' must be a data.frame"
@@ -33,7 +33,9 @@ test_that("outliers assignment format", {
 })
 
 test_that("outlier assignment", {
-  outliers(sea, "replace") <- tibble::tibble(rate = "OCR", well = "A01")
+  suppressMessages(
+    outliers(sea, "replace") <- tibble::tibble(rate = "OCR", well = "A01")
+  )
   expect_snapshot(outliers(sea))
   expect_snapshot(outliers(`outliers<-`(sea, "remove")))
   outliers(sea, "add") <- tibble::tibble(rate = "OCR", well = "A02")
@@ -45,20 +47,37 @@ test_that("outlier assignment", {
 })
 
 test_that("outlier assignment errors", {
-  outliers(sea, "replace") <- tibble::tibble(rate = "OCR", well = "A01")
+  suppressMessages(
+    outliers(sea, "replace") <- tibble::tibble(rate = "OCR", well = "A01")
+  )
   expect_message(
     `outliers<-`(sea, "add", value = tibble::tibble(rate = "OCR", well = "A01")),
-    "These wells are currently outliers:"
+    "These values are currently outliers:"
   ) |>
-    suppressWarnings()
+    expect_warning("Outliers unchanged")
   expect_message(
     `outliers<-`(sea, "subtract", value = tibble::tibble(rate = "OCR", well = "A02")),
-    "These wells are not currently outliers:"
+    "These values are not currently outliers:"
   ) |>
-    suppressWarnings()
+    expect_warning("Outliers unchanged")
   expect_warning(
     `outliers<-`(sea, "add", value = tibble::tibble(rate = "OCR", well = "A01")),
     "Outliers unchanged"
   ) |>
-    suppressMessages()
+    expect_message("These values are currently outliers")
+})
+
+test_that("blanks handled", {
+  value1 <- tibble::tibble(rate = "OCR", well = "A01")
+  expect_message(
+    `outliers<-`(sea, "add", value = value1),
+    "Moving these blank wells to outliers"
+  )
+  suppressMessages(
+    outliers(sea, "add") <- value1
+  )
+  expect_message(
+    `outliers<-`(sea, "subtract", value = value1),
+    "Moving these outlier wells to blanks"
+  )
 })

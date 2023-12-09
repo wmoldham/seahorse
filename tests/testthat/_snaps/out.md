@@ -42,6 +42,15 @@
 
     Code
       outliers(`outliers<-`(sea, "remove"))
+    Message
+      Moving these outlier wells to blanks:
+      
+      * # A tibble: 1 x 2
+      # Groups:   rate [1]
+        rate  well 
+        <fct> <chr>
+      1 OCR   A01  
+      * 
     Output
       # A tibble: 576 x 5
          rate  measurement group well  outlier

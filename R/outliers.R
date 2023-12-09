@@ -71,10 +71,10 @@ setMethod("outliers<-", "Seahorse", function(
 
       overlap <-
         dplyr::intersect(old_values, replacements)
-      if (nrow(overlap) > 0 ) {
+      if (nrow(overlap) > 0) {
         rlang::inform(
           c(
-            "These wells are currently outliers:\n\n",
+            "These values are currently outliers:\n",
             print_df(overlap), "\n"
           )
         )
@@ -95,7 +95,7 @@ setMethod("outliers<-", "Seahorse", function(
       if (nrow(overlap) > 0) {
         rlang::inform(
           c(
-            "These wells are not currently outliers:\n\n",
+            "These values are not currently outliers:\n",
             print_df(overlap), "\n"
           )
         )
@@ -117,6 +117,41 @@ setMethod("outliers<-", "Seahorse", function(
   changed <- dplyr::setdiff(new_values, old_values)
   added <- dplyr::filter(changed, .data$outlier)  # false to true
   removed <- dplyr::filter(changed, !.data$outlier)  # true to false
+  measurements <- unique(x@outliers$measurement)
+
+  # blanks to outliers
+  outlier_wells <- summarise_to_well(added, measurements)
+  blanks_to_outliers <- dplyr::intersect(outlier_wells, blanks(x))
+  if (nrow(blanks_to_outliers) > 0) {
+    rlang::inform(
+      c(
+        "Moving these blank wells to outliers:\n",
+        print_df(blanks_to_outliers), "\n"
+      )
+    )
+    x <-
+      `blanks<-`(x, "subtract", value = blanks_to_outliers) |>
+      suppressWarnings() |>
+      suppressMessages()
+  }
+
+  # outliers to blanks
+  original_blanks <- init_blanks(x@wells)
+  outliers_to_blanks <-
+    summarise_to_well(removed, measurements) |>
+    dplyr::intersect(original_blanks)
+  if (nrow(outliers_to_blanks) > 0) {
+    rlang::inform(
+      c(
+        "Moving these outlier wells to blanks:\n",
+        print_df(outliers_to_blanks), "\n"
+      )
+    )
+    x <-
+      `blanks<-`(x, "add", value = outliers_to_blanks) |>
+      suppressWarnings() |>
+      suppressMessages()
+  }
 
   x
 })

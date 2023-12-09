@@ -76,7 +76,7 @@ setMethod("blanks<-", "Seahorse", function(
       if (nrow(overlap) > 0 ) {
         rlang::inform(
           c(
-            "These wells are currently blanks:\n\n",
+            "These wells are currently blanks:\n",
             print_df(overlap), "\n"
           )
         )
@@ -90,7 +90,7 @@ setMethod("blanks<-", "Seahorse", function(
       if (nrow(overlap) > 0) {
         rlang::inform(
           c(
-            "These wells are not currently blanks:\n\n",
+            "These wells are not currently blanks:\n",
             print_df(overlap), "\n"
           )
         )
@@ -111,6 +111,37 @@ setMethod("blanks<-", "Seahorse", function(
   }
   added <- dplyr::setdiff(new_values, old_values)
   removed <- dplyr::setdiff(old_values, new_values)
+
+  # blanks in outliers
+  blanks_in_outliers <-
+    dplyr::left_join(added, x@outliers, by = c("rate", "well")) |>
+    dplyr::filter(outlier)
+  if (nrow(blanks_in_outliers) > 0) {
+    rlang::inform(
+      c(
+        "Moving these outlier values to blanks:\n",
+        print_df(blanks_in_outliers), "\n"
+      )
+    )
+    x <-
+      `outliers<-`(x, "subtract", value = added) |>
+      suppressWarnings() |>
+      suppressMessages()
+  }
+
+  # move blank to outliers
+  if (nrow(removed) > 0) {
+    rlang::inform(
+      c(
+        "Moving these blank wells to outliers:\n",
+        print_df(removed), "\n"
+      )
+    )
+    x <-
+      `outliers<-`(x, "add", value = removed) |>
+      suppressWarnings() |>
+      suppressMessages()
+  }
 
   # update calculations
   ocr_changed <- any(c(added$rate, removed$rate) %in% "OCR")

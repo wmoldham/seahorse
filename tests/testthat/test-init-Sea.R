@@ -1,12 +1,16 @@
 #test-init-Sea.R
 
+suppressMessages(
+  x <- Seahorse(.path)
+)
+
 test_that("Seahorse from path only", {
-  expect_s4_class(Seahorse(.path), "Seahorse")
+  expect_s4_class(x, "Seahorse")
 })
 
 test_that("init_wells works", {
   expect_snapshot(init_wells(wells = list(), x = sea))
-  expect_true("group" %in% names(Seahorse(.path)@wells))
+  expect_true("group" %in% names(x@wells))
   expect_error(
     init_wells(wells = list(type = "sample")),
     "Wells must contain a column named 'well'"
@@ -42,7 +46,7 @@ test_that("init_wells works", {
 
 test_that("init_stages works", {
   expect_snapshot(init_stages(stages = list(), x = sea))
-  expect_true("well" %in% names(Seahorse(.path)@stages))
+  expect_true("well" %in% names(x@stages))
   expect_error(
     init_stages(stages = list(measurement = 1)),
     "Stages must contain a column named 'stage'"
@@ -93,7 +97,8 @@ test_that("init_cells works", {
   )
   expect_error(
     Seahorse(.path, cells = list(well = c(wells_24, "A01"), value = 1)),
-    "Cells column 'well' contains duplicates")
+    "Cells column 'well' contains duplicates"
+  )
 })
 
 test_that("units argument to Seahorse works", {
