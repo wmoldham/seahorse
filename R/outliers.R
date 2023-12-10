@@ -155,3 +155,10 @@ setMethod("outliers<-", "Seahorse", function(
 
   x
 })
+
+
+setGeneric("findOut", function(x, ...) standardGeneric("findOut"))
+
+setMethod("findOut", "Seahorse", function(x) {
+
+})
