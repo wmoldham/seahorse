@@ -115,7 +115,7 @@ setMethod("blanks<-", "Seahorse", function(
   # blanks in outliers
   blanks_in_outliers <-
     dplyr::left_join(added, x@outliers, by = c("rate", "well")) |>
-    dplyr::filter(outlier)
+    dplyr::filter(.data$outlier)
   if (nrow(blanks_in_outliers) > 0) {
     rlang::inform(
       c(
