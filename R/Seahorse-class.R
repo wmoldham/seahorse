@@ -29,6 +29,72 @@ setClass(
 
 # constructor -------------------------------------------------------------
 
+#' Seahorse class constructor
+#'
+#' `Seahorse` is an S4 container used to store the calibration values and raw
+#' data from a single Seahorse assay; to calculate oxygen consumption,
+#' extracellular acidification, and proton efflux rates from the raw data; and
+#' to facilitate outlier detection, data analysis, and visualization.
+#'
+#' @param path Character vector for the Seahorse `xlsx` file path.
+#' @param wells An optional list or data frame containing vectors of
+#'     experimental descriptors for each of the sample wells. At minimum,
+#'     `wells` must contain character vectors named `well` and `type`. `well`
+#'     must contain a unique entry for each well in the experimental plate.
+#'     `type` must be `sample` or `blank` for each well. Users should consider
+#'     a `group` column that labels unique experimental groups. It is probably
+#'     worthwhile to convert this column to a factor based on the preferred
+#'     ordering of experimental groups. Additional descriptors may be included
+#'     (*e.g.*, `treatment`, `time`, `condition`). If a `group` vector was not
+#'     provided, one will be generated from `type` or a combination of the
+#'     remaining descriptors.
+#' @param stages An optional list or data frame containing vectors of
+#'     experimental descriptors for each of the measurement stages. `stages`
+#'     must contain character vectors named `measurement` and `stage`.
+#'     `measurement` must contain a unique entry for each measurement in the
+#'     experiment. `stage` describes the experimental interval (*e.g.*, for a
+#'     typical mitochondrial stress assay, `stage` would be `basal`, `oligo`,
+#'     `fccp`, or `rot/ama`). A `well` column may also be included if the
+#'     injections differ among treatment wells.
+#' @param cells An optional list or data frame containing vectors of
+#'     normalization data for an experiment. If provided, `cells` must contain
+#'     a character vector named `well` and a numeric vector named `value`.
+#'     `well` must contain a unique entry for each well in the experimental
+#'     plate. `value` contains the normalization factor (*e.g.*, cell number or
+#'     protein content).
+#' @param units An optional character vector describing the units of the
+#'     normalization factor provided in the `value`column of `cells`. This will
+#'     be used to annotate graphs.
+#' @param bf An optional length-one numeric vector containing the buffer factor
+#'     of the medium. This value is used to calculate the proton efflux rate
+#'     (PER) from the extracellular acidification rate (ECAR).
+#' @param cf An optional length-one numeric vector describing the carbon dioxide
+#'     correction factor for the cells in the assay. This parameter is used to
+#'     separate the mitochondrial and glycolytic contributions to the proton
+#'     efflux rate.
+#'
+#' @details During creation of the Seahore object, raw fluorescence readings
+#'     are converted to O2 and pH measurements from which oxygen consumptions
+#'     and extracellular acidification rates are calculated. Outlying wells are
+#'     identified and removed.
+#'
+#' @seealso [helpers], [format_cells], [accessors], [blanks], [outliers], [plot]
+#'
+#' @export
+#'
+#' @examples
+#' path <- system.file("extdata/raw_1.xlsx", package = "seahorse", mustWork = TRUE)
+#' well <- wells_24
+#' type <- c("blank", rep("sample", 8), "blank", rep("sample", 4), "blank", rep("sample", 8), "blank")
+#' x <- rep(LETTERS[1:5], each = 4)
+#' group <- replace(type, which(type == "sample"), x)
+#' wells <- list(well = well, type = type, group = group)
+#' measurement <- 1:12
+#' stage <- rep(LETTERS[1:4], each = 3)
+#' stages <- list(measurement = measurement, stage = stage)
+#' cells <- list(well = well, value = 20000)
+#' Seahorse(path, wells, stages, cells, units = "cell", bf = 2.4, cdcf = 0.41)
+#'
 Seahorse <- function(
     path,
     wells =  list(),
