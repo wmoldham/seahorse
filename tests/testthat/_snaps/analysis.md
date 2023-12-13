@@ -5,7 +5,7 @@
     Output
       # A tibble: 8,064 x 8
          measurement stage well  type  group  time sensor value
-               <dbl> <chr> <chr> <chr> <fct> <dbl> <fct>  <dbl>
+               <dbl> <fct> <chr> <chr> <fct> <dbl> <fct>  <dbl>
        1           1 basal A01   blank blank     0 O2      151.
        2           1 basal A01   blank blank    14 O2      151.
        3           1 basal A01   blank blank    28 O2      151.
@@ -23,9 +23,9 @@
     Code
       levels(sea, blanks = TRUE, outliers = FALSE)
     Output
-      # A tibble: 7,728 x 8
+      # A tibble: 7,392 x 8
          measurement stage well  type  group  time sensor value
-               <dbl> <chr> <chr> <chr> <fct> <dbl> <fct>  <dbl>
+               <dbl> <fct> <chr> <chr> <fct> <dbl> <fct>  <dbl>
        1           1 basal A01   blank blank     0 O2      151.
        2           1 basal A01   blank blank    14 O2      151.
        3           1 basal A01   blank blank    28 O2      151.
@@ -36,16 +36,16 @@
        8           1 basal A01   blank blank    97 O2      152.
        9           1 basal A01   blank blank   111 O2      152.
       10           1 basal A01   blank blank   125 O2      152.
-      # i 7,718 more rows
+      # i 7,382 more rows
 
 ---
 
     Code
       levels(sea, blanks = FALSE, outliers = FALSE)
     Output
-      # A tibble: 6,720 x 8
+      # A tibble: 6,216 x 8
          measurement stage well  type   group  time sensor value
-               <dbl> <chr> <chr> <chr>  <fct> <dbl> <fct>  <dbl>
+               <dbl> <fct> <chr> <chr>  <fct> <dbl> <fct>  <dbl>
        1           1 basal A02   sample A         0 O2      151.
        2           1 basal A02   sample A        14 O2      150.
        3           1 basal A02   sample A        28 O2      150.
@@ -56,7 +56,7 @@
        8           1 basal A02   sample A        97 O2      150.
        9           1 basal A02   sample A       111 O2      150.
       10           1 basal A02   sample A       125 O2      150.
-      # i 6,710 more rows
+      # i 6,206 more rows
 
 # rates works
 
@@ -65,7 +65,7 @@
     Output
       # A tibble: 576 x 7
          measurement stage well  type   group rate   value
-               <dbl> <chr> <chr> <chr>  <fct> <fct>  <dbl>
+               <dbl> <fct> <chr> <chr>  <fct> <fct>  <dbl>
        1           1 basal A01   blank  blank OCR   -3.04 
        2           1 basal A02   sample A     OCR   15.0  
        3           1 basal A03   sample A     OCR   13.8  
@@ -83,9 +83,9 @@
     Code
       rates(sea, blanks = FALSE, outliers = TRUE, normalize = TRUE)
     Output
-      # A tibble: 504 x 7
+      # A tibble: 492 x 7
          measurement stage well  type   group rate  value
-               <dbl> <chr> <chr> <chr>  <fct> <fct> <dbl>
+               <dbl> <fct> <chr> <chr>  <fct> <fct> <dbl>
        1           1 basal A02   sample A     OCR    15.0
        2           1 basal A03   sample A     OCR    13.8
        3           1 basal A04   sample A     OCR    16.7
@@ -96,16 +96,16 @@
        8           1 basal B03   sample B     OCR    50.1
        9           1 basal B05   sample C     OCR    61.0
       10           1 basal B06   sample C     OCR    39.0
-      # i 494 more rows
+      # i 482 more rows
 
 ---
 
     Code
       rates(sea, blanks = TRUE, outliers = FALSE, normalize = TRUE)
     Output
-      # A tibble: 552 x 7
+      # A tibble: 528 x 7
          measurement stage well  type   group rate   value
-               <dbl> <chr> <chr> <chr>  <fct> <fct>  <dbl>
+               <dbl> <fct> <chr> <chr>  <fct> <fct>  <dbl>
        1           1 basal A01   blank  blank OCR   -3.04 
        2           1 basal A02   sample A     OCR   15.0  
        3           1 basal A03   sample A     OCR   13.8  
@@ -116,7 +116,7 @@
        8           1 basal B02   sample B     OCR   43.2  
        9           1 basal B03   sample B     OCR   50.1  
       10           1 basal B04   blank  blank OCR    0.969
-      # i 542 more rows
+      # i 518 more rows
 
 ---
 
@@ -125,7 +125,7 @@
     Output
       # A tibble: 576 x 7
          measurement stage well  type   group rate   value
-               <dbl> <chr> <chr> <chr>  <fct> <fct>  <dbl>
+               <dbl> <fct> <chr> <chr>  <fct> <fct>  <dbl>
        1           1 basal A01   blank  blank OCR   -3.04 
        2           1 basal A02   sample A     OCR   15.0  
        3           1 basal A03   sample A     OCR   13.8  

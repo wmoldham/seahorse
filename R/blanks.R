@@ -113,9 +113,7 @@ setMethod("blanks<-", "Seahorse", function(
   removed <- dplyr::setdiff(old_values, new_values)
 
   # blanks in outliers
-  blanks_in_outliers <-
-    dplyr::left_join(added, x@outliers, by = c("rate", "well")) |>
-    dplyr::filter(.data$outlier)
+  blanks_in_outliers <- dplyr::intersect(added, x@outliers)
   if (nrow(blanks_in_outliers) > 0) {
     rlang::inform(
       c(

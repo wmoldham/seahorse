@@ -37,13 +37,12 @@ setMethod("levels", "Seahorse", function(x, blanks = TRUE, outliers = FALSE) {
   if (!outliers) {
     outliers_df <-
       x@outliers |>
-      dplyr::filter(.data$outlier) |>
       dplyr::mutate(
         sensor = ifelse(.data$rate == "OCR", "O2", "pH"),
         sensor = factor(.data$sensor, levels = c("O2", "pH"))
       )
 
-    df <- dplyr::anti_join(df, outliers_df, by = c("sensor", "measurement", "well"))
+    df <- dplyr::anti_join(df, outliers_df, by = c("sensor", "well"))
   }
 
   df
@@ -80,10 +79,7 @@ setMethod(
     }
 
     if (!outliers) {
-      outliers_df <-
-        x@outliers |>
-        dplyr::filter(.data$outlier)
-      df <- dplyr::anti_join(df, outliers_df, by = c("rate", "measurement", "well"))
+      df <- dplyr::anti_join(df, x@outliers, by = c("rate", "well"))
     }
 
     if (!is.na(x@bf)) {

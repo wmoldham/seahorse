@@ -3,127 +3,72 @@
     Code
       outliers(sea)
     Output
-      # A tibble: 576 x 5
-         rate  measurement group well  outlier
-         <fct>       <dbl> <fct> <chr> <lgl>  
-       1 OCR             1 blank A01   FALSE  
-       2 OCR             1 A     A02   FALSE  
-       3 OCR             1 A     A03   FALSE  
-       4 OCR             1 A     A04   FALSE  
-       5 OCR             1 A     A05   FALSE  
-       6 OCR             1 B     A06   FALSE  
-       7 OCR             1 B     B01   FALSE  
-       8 OCR             1 B     B02   FALSE  
-       9 OCR             1 B     B03   FALSE  
-      10 OCR             1 blank B04   FALSE  
-      # i 566 more rows
+      # A tibble: 4 x 2
+        rate  well 
+        <fct> <chr>
+      1 OCR   B05  
+      2 OCR   D04  
+      3 OCR   D05  
+      4 OCR   D06  
 
 # outlier assignment
 
     Code
       outliers(sea)
     Output
-      # A tibble: 576 x 5
-         rate  measurement group well  outlier
-         <fct>       <dbl> <fct> <chr> <lgl>  
-       1 OCR             1 blank A01   TRUE   
-       2 OCR             1 A     A02   FALSE  
-       3 OCR             1 A     A03   FALSE  
-       4 OCR             1 A     A04   FALSE  
-       5 OCR             1 A     A05   FALSE  
-       6 OCR             1 B     A06   FALSE  
-       7 OCR             1 B     B01   FALSE  
-       8 OCR             1 B     B02   FALSE  
-       9 OCR             1 B     B03   FALSE  
-      10 OCR             1 blank B04   FALSE  
-      # i 566 more rows
-
----
-
-    Code
-      outliers(`outliers<-`(sea, "remove"))
-    Message
-      Moving these outlier wells to blanks:
-      
-      * # A tibble: 1 x 2
-      # Groups:   rate [1]
+      # A tibble: 1 x 2
         rate  well 
         <fct> <chr>
       1 OCR   A01  
-      * 
-    Output
-      # A tibble: 576 x 5
-         rate  measurement group well  outlier
-         <fct>       <dbl> <fct> <chr> <lgl>  
-       1 OCR             1 blank A01   FALSE  
-       2 OCR             1 A     A02   FALSE  
-       3 OCR             1 A     A03   FALSE  
-       4 OCR             1 A     A04   FALSE  
-       5 OCR             1 A     A05   FALSE  
-       6 OCR             1 B     A06   FALSE  
-       7 OCR             1 B     B01   FALSE  
-       8 OCR             1 B     B02   FALSE  
-       9 OCR             1 B     B03   FALSE  
-      10 OCR             1 blank B04   FALSE  
-      # i 566 more rows
 
 ---
 
     Code
       outliers(sea)
     Output
-      # A tibble: 576 x 5
-         rate  measurement group well  outlier
-         <fct>       <dbl> <fct> <chr> <lgl>  
-       1 OCR             1 blank A01   TRUE   
-       2 OCR             1 A     A02   TRUE   
-       3 OCR             1 A     A03   FALSE  
-       4 OCR             1 A     A04   FALSE  
-       5 OCR             1 A     A05   FALSE  
-       6 OCR             1 B     A06   FALSE  
-       7 OCR             1 B     B01   FALSE  
-       8 OCR             1 B     B02   FALSE  
-       9 OCR             1 B     B03   FALSE  
-      10 OCR             1 blank B04   FALSE  
-      # i 566 more rows
+      # A tibble: 0 x 2
+      # i 2 variables: rate <fct>, well <chr>
 
 ---
 
     Code
       outliers(sea)
     Output
-      # A tibble: 576 x 5
-         rate  measurement group well  outlier
-         <fct>       <dbl> <fct> <chr> <lgl>  
-       1 OCR             1 blank A01   TRUE   
-       2 OCR             1 A     A02   FALSE  
-       3 OCR             1 A     A03   FALSE  
-       4 OCR             1 A     A04   FALSE  
-       5 OCR             1 A     A05   FALSE  
-       6 OCR             1 B     A06   FALSE  
-       7 OCR             1 B     B01   FALSE  
-       8 OCR             1 B     B02   FALSE  
-       9 OCR             1 B     B03   FALSE  
-      10 OCR             1 blank B04   FALSE  
-      # i 566 more rows
+      # A tibble: 1 x 2
+        rate  well 
+        <fct> <chr>
+      1 OCR   A02  
 
 ---
 
     Code
       outliers(sea)
     Output
-      # A tibble: 576 x 5
-         rate  measurement group well  outlier
-         <fct>       <dbl> <fct> <chr> <lgl>  
-       1 OCR             1 blank A01   TRUE   
-       2 OCR             1 A     A02   FALSE  
-       3 OCR             1 A     A03   FALSE  
-       4 OCR             1 A     A04   FALSE  
-       5 OCR             1 A     A05   FALSE  
-       6 OCR             1 B     A06   FALSE  
-       7 OCR             1 B     B01   FALSE  
-       8 OCR             1 B     B02   FALSE  
-       9 OCR             1 B     B03   FALSE  
-      10 OCR             1 blank B04   FALSE  
-      # i 566 more rows
+      # A tibble: 0 x 2
+      # i 2 variables: rate <fct>, well <chr>
+
+---
+
+    Code
+      outliers(sea)
+    Output
+      # A tibble: 1 x 2
+        rate  well 
+        <fct> <chr>
+      1 OCR   A01  
+
+---
+
+    Code
+      outliers(sea)
+    Output
+      # A tibble: 6 x 2
+        rate  well 
+        <fct> <chr>
+      1 OCR   B04  
+      2 OCR   B05  
+      3 OCR   C03  
+      4 OCR   D04  
+      5 OCR   D05  
+      6 OCR   D06  
 

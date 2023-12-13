@@ -16,11 +16,11 @@ test_that("outliers assignment format", {
   )
   expect_error(
     `outliers<-`(sea, "add", value = data.frame(a = 1, b = 1)),
-    "Outliers data.frame column names must be 'rate', 'well', and 'measurement'"
+    "Outliers data.frame column names must be 'rate' and 'well'"
   )
   expect_error(
     `outliers<-`(sea, "add", value = data.frame(rate = 1, well = 1, c = 1)),
-    "Outliers data.frame column names must be 'rate', 'well', and 'measurement'"
+    "Outliers data.frame column names must be 'rate' and 'well'"
   )
   expect_error(
     `outliers<-`(sea, "add", value = data.frame(rate = "x", well = 1)),
@@ -37,12 +37,21 @@ test_that("outlier assignment", {
     outliers(sea, "replace") <- tibble::tibble(rate = "OCR", well = "A01")
   )
   expect_snapshot(outliers(sea))
-  expect_snapshot(outliers(`outliers<-`(sea, "remove")))
+  suppressMessages(
+    outliers(sea, "remove") <- NA
+  )
+  expect_snapshot(outliers(sea))
   outliers(sea, "add") <- tibble::tibble(rate = "OCR", well = "A02")
   expect_snapshot(outliers(sea))
   outliers(sea, "subtract") <- tibble::tibble(rate = "OCR", well = "A02")
   expect_snapshot(outliers(sea))
-  outliers(sea, "replace") <- tibble::tibble(rate = "OCR", well = "A01", measurement = 1)
+  suppressMessages(
+    outliers(sea, "replace") <- tibble::tibble(rate = "OCR", well = "A01")
+  )
+  expect_snapshot(outliers(sea))
+  suppressMessages(
+    outliers(sea, "reset") <- NA
+  )
   expect_snapshot(outliers(sea))
 })
 
@@ -52,7 +61,7 @@ test_that("outlier assignment errors", {
   )
   expect_message(
     `outliers<-`(sea, "add", value = tibble::tibble(rate = "OCR", well = "A01")),
-    "These values are currently outliers:"
+    "These values are already outliers:"
   ) |>
     expect_warning("Outliers unchanged")
   expect_message(
@@ -64,7 +73,7 @@ test_that("outlier assignment errors", {
     `outliers<-`(sea, "add", value = tibble::tibble(rate = "OCR", well = "A01")),
     "Outliers unchanged"
   ) |>
-    expect_message("These values are currently outliers")
+    expect_message("These values are already outliers")
 })
 
 test_that("blanks handled", {

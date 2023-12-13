@@ -245,21 +245,6 @@ init_blanks <- function(wells) {
 }
 
 
-init_outliers <- function(x) {
-  dplyr::left_join(
-    x@stages,
-    x@wells,
-    by = "well",
-    relationship = "many-to-many"
-  ) |>
-    tidyr::crossing(tibble::tibble(rate = c("OCR", "ECAR"))) |>
-    dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "ECAR"))) |>
-    dplyr::select("rate", "measurement", "group", "well") |>
-    dplyr::arrange(.data$rate, .data$measurement, .data$well) |>
-    dplyr::mutate(outlier = FALSE)
-}
-
-
 find_blank_outliers <- function(x) {
   dplyr::left_join(x@stages, x@wells, by = "well") |>
     dplyr::filter(.data$type == "blank") |>

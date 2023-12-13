@@ -81,8 +81,8 @@ setMethod("initialize", "Seahorse", function(
   .Object@OCR <- rate_O2(.Object@O2, .Object@config)
   .Object@pH <- level_pH(.Object@raw, .Object@config)
   .Object@ECAR <- rate_pH(.Object@pH, .Object@blanks)
-  .Object@outliers <- init_outliers(.Object)
-  outliers(.Object, "replace") <- find_blank_outliers(.Object)
+  .Object@outliers <- tibble::tibble(rate = factor(), well = character())
+  outliers(.Object, "add") <- findOut(.Object)
 
   .Object
 })
