@@ -1,13 +1,62 @@
 # outliers.R
 
+#' @include Seahorse-class.R
+NULL
+
+# document ----------------------------------------------------------------
+
+#' Outliers accessors for `seahorse` S4 objects
+#'
+#' Outlier wells may be excluded from analyses. They are identified using the
+#' `findOut` method.
+#'
+#' @param x A `Seahorse` or `Herd` object.
+#' @param action Indicates how replacement values modify the existing values:
+#'
+#' | **action** | &nbsp;&nbsp;&nbsp; **description** |
+#' |------------|-----------------------------------|
+#' | remove   | &nbsp;&nbsp;&nbsp; set all values to `NA` |
+#' | reset   | &nbsp;&nbsp;&nbsp; assign outliers based on `findOut` |
+#' | replace | &nbsp;&nbsp;&nbsp; completely replace `outliers` with new values |
+#' | add | &nbsp;&nbsp;&nbsp; add new outlier wells |
+#' | subtract | &nbsp;&nbsp;&nbsp; remove outlier wells |
+#'
+#' @param value A data frame with two columns named `rate` and `well`. The
+#'     `rate` columns should contain either `OCR` or `ECAR`. The `well` column
+#'     identifies the outlier wells formatted as "A01". For the "reset" and
+#'     "remove" actions, the assigned value is ignored, but use `NA`.
+#' @name outliers
+#' @aliases outliers outliers<-
+#' @seealso [findOut]
+#'
+NULL
+
 setGeneric("outliers", function(x) standardGeneric("outliers"))
 setGeneric("outliers<-", function(x, ..., value = NA) standardGeneric("outliers<-"))
 
+# getter ------------------------------------------------------------------
+
+#' @export
+#' @rdname outliers
+#' @returns `outliers(x)` returns a data frame of wells identified as outliers
+#'     for OCR and ECAR calculations and plots.
 setMethod("outliers", "Seahorse", function(x) {
   cat(print_wells(x@outliers), sep = "\n")
   invisible(x@outliers)
 })
 
+
+# setter ------------------------------------------------------------------
+
+#' @export
+#' @rdname outliers
+#' @examples
+#' outliers(sheldon)
+#' outliers(sheldon, "replace") <- findOut(sheldon)
+#' outliers(sheldon)
+#' outliers(sheldon, "reset") <- NA
+#' outliers(sheldon)
+#'
 setMethod("outliers<-", "Seahorse", function(
     x,
     action = c("remove", "reset", "replace", "add", "subtract"),
@@ -132,8 +181,30 @@ setMethod("outliers<-", "Seahorse", function(
 })
 
 
+# findOut -----------------------------------------------------------------
+
+#' Remove outlying samples
+#'
+#' Generic function for removing outliers.
+#'
+#' @param x An **R** object. Currently there are methods for
+#'     [seahorse::Seahorse] and [seahorse::Herd-class] objects.
+#' @param ... Reserved for future development
+#' @returns Returns a data frame of outlying samples.
 setGeneric("findOut", function(x, ...) standardGeneric("findOut"))
 
+
+#' @export
+#' @param blanks Should `findOut` look for outliers in blank samples?
+#' @param outliers Should `findOut` include current outliers when looking for
+#'     new outliers?
+#' @describeIn findOut This method compares OCR and ECAR rates within
+#'     experimental groups to identify outlying wells. The function returns a
+#'     data frame identifying outlying wells. These wells can then be excluded
+#'     from downstream analyses by assigning to the `Seahorse` object using
+#'     `outliers<-`.
+#' @examples
+#' outliers(sheldon, "replace") <- findOut(sheldon)
 setMethod("findOut", "Seahorse", function(x, blanks = TRUE, outliers = FALSE, ...) {
   df <-
     rates(x, blanks = TRUE, outliers = FALSE, normalize = TRUE) |>

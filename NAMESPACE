@@ -3,5 +3,8 @@
 export(Seahorse)
 export(format_cells)
 exportMethods("blanks<-")
+exportMethods("outliers<-")
 exportMethods(blanks)
+exportMethods(findOut)
+exportMethods(outliers)
 importFrom(rlang,.data)
