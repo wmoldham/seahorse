@@ -2,4 +2,6 @@
 
 export(Seahorse)
 export(format_cells)
+exportMethods("blanks<-")
+exportMethods(blanks)
 importFrom(rlang,.data)

@@ -1,15 +1,67 @@
 # blanks.R
 
+#' @include Seahorse-class.R
+NULL
+
+# document ----------------------------------------------------------------
+
+#' Blanks accessors for `seahorse` S4 objects
+#'
+#' Blank values are essential for accurate calculations of oxygen consumption
+#' (OCR) and extracellular acidification (ECAR) rates. Wells removed from
+#' `blanks` are added to the list of experimental outliers.
+#'
+#' @param x A `Seahorse` object.
+#' @param action Indicates how replacement values modify the existing values:
+#'
+#' | **action** | &nbsp;&nbsp;&nbsp; **description** |
+#' |------------|-----------------------------------|
+#' | remove   | &nbsp;&nbsp;&nbsp; set all values to `NA` |
+#' | reset   | &nbsp;&nbsp;&nbsp; assign blanks based on the original data file |
+#' | replace | &nbsp;&nbsp;&nbsp; completely replace `blanks` with new values |
+#' | add | &nbsp;&nbsp;&nbsp; add new blank wells |
+#' | subtract | &nbsp;&nbsp;&nbsp; remove blank wells |
+#'
+#' @param value A data frame with two columns named `rate` and `well`. The
+#'     `rate` columns should contain either `OCR` or `ECAR`. The `well` column
+#'     identifies the blank wells formatted as "A01". Changing blank wells
+#'     automatically recalculates OCR and ECAR values. For the "reset" and
+#'     "remove" actions, the assigned value is ignored, but use `NA`.
+#' @name blanks
+#' @aliases blanks blanks<-
+#'
+NULL
+
+
+# generics ----------------------------------------------------------------
+
 setGeneric("blanks", function(x) standardGeneric("blanks"))
 setGeneric("blanks<-", function(x, ..., value = NA) standardGeneric("blanks<-"))
 
+
+# getter ------------------------------------------------------------------
+
+#' @export
+#' @rdname blanks
+#' @returns `blanks(x)` returns a data frame of wells used as blanks for OCR
+#'     and ECAR calculations.
 setMethod("blanks", "Seahorse", function(x) {
   cat(print_wells(x@blanks), sep = "\n")
   invisible(x@blanks)
 })
 
 
+# setter ------------------------------------------------------------------
 
+#' @export
+#' @rdname blanks
+#' @examples
+#' blanks(sheldon)
+#' blanks(sheldon, "replace") <- list(OCR = "A01")
+#' blanks(sheldon)
+#' blanks(sheldon, "reset") <- NA
+#' blanks(sheldon)
+#'
 setMethod("blanks<-", "Seahorse", function(
     x,
     action = c("remove", "reset", "replace", "add", "subtract"),
