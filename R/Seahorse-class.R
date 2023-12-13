@@ -184,15 +184,13 @@ methods::setValidity("Seahorse", function(object) {
 
 setMethod("show", "Seahorse", function(object) {
   cat("\n")
-  cat("Seahorse Experiment\n")
-  cat("File:   ", object@filename, "\n")
-  cat("Time:   ", as.character(object@time), "\n")
-  # cat("Blanks ----------------------\n")
-  # cat("- OCR:  ", object@blanks$OCR, "\n")
-  # cat("- ECAR: ", object@blanks$ECAR, "\n")
-  # cat("Outliers --------------------\n")
-  # cat("- OCR:  ", object@outliers$OCR, "\n")
-  # cat("- ECAR: ", object@outliers$ECAR, "\n")
+  cat("Seahorse Experiment ---------\n")
+  cat("- File: ", object@filename, "\n")
+  cat("- Time: ", as.character(object@time), "\n")
+  cat("Blanks ----------------------\n")
+  cat(print_wells(object@blanks), sep = "\n")
+  cat("Outliers --------------------\n")
+  cat(print_wells(object@outliers), sep = "\n")
   # cat("Analyses --------------------\n")
   # analyses <- list()
   # if (length(object@mst) != 0) {

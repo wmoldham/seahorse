@@ -3,7 +3,11 @@
 setGeneric("blanks", function(x) standardGeneric("blanks"))
 setGeneric("blanks<-", function(x, ..., value = NA) standardGeneric("blanks<-"))
 
-setMethod("blanks", "Seahorse", function(x) x@blanks)
+setMethod("blanks", "Seahorse", function(x) {
+  cat(print_wells(x@blanks), sep = "\n")
+  invisible(x@blanks)
+})
+
 
 
 setMethod("blanks<-", "Seahorse", function(
@@ -117,8 +121,8 @@ setMethod("blanks<-", "Seahorse", function(
   if (nrow(blanks_in_outliers) > 0) {
     rlang::inform(
       c(
-        "Moving these outlier values to blanks:\n",
-        print_df(blanks_in_outliers), "\n"
+        "\nMoving these outlier values to blanks:",
+        print_wells(blanks_in_outliers), "\n"
       )
     )
     x <-
@@ -131,8 +135,8 @@ setMethod("blanks<-", "Seahorse", function(
   if (nrow(removed) > 0) {
     rlang::inform(
       c(
-        "Moving these blank wells to outliers:\n",
-        print_df(removed), "\n"
+        "\nMoving these blank wells to outliers:",
+        print_wells(removed), "\n"
       )
     )
     x <-

@@ -3,7 +3,10 @@
 setGeneric("outliers", function(x) standardGeneric("outliers"))
 setGeneric("outliers<-", function(x, ..., value = NA) standardGeneric("outliers<-"))
 
-setMethod("outliers", "Seahorse", function(x) x@outliers)
+setMethod("outliers", "Seahorse", function(x) {
+  cat(print_wells(x@outliers), sep = "\n")
+  invisible(x@outliers)
+})
 
 setMethod("outliers<-", "Seahorse", function(
     x,
@@ -95,12 +98,12 @@ setMethod("outliers<-", "Seahorse", function(
   removed <- dplyr::setdiff(old_values, new_values)
 
   # blanks to outliers
-  blanks_to_outliers <- dplyr::intersect(added, blanks(x))
+  blanks_to_outliers <- dplyr::intersect(added, x@blanks)
   if (nrow(blanks_to_outliers) > 0) {
     rlang::inform(
       c(
-        "Moving these blank wells to outliers:\n",
-        print_df(blanks_to_outliers), "\n"
+        "\nMoving these blank wells to outliers:",
+        print_wells(blanks_to_outliers), "\n"
       )
     )
     x <-
@@ -115,8 +118,8 @@ setMethod("outliers<-", "Seahorse", function(
   if (nrow(outliers_to_blanks) > 0) {
     rlang::inform(
       c(
-        "Moving these outlier wells to blanks:\n",
-        print_df(outliers_to_blanks), "\n"
+        "\nMoving these outlier wells to blanks:",
+        print_wells(outliers_to_blanks), "\n"
       )
     )
     x <-

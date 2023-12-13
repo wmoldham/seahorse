@@ -1,7 +1,7 @@
 # test-blanks.R
 
 test_that("blanks accessor works", {
-  expect_snapshot(blanks(sea))
+  quiet(expect_snapshot(blanks(sea)))
 })
 
 test_that("blanks assignment format", {
@@ -46,27 +46,31 @@ test_that("blanks assignment", {
     blanks(sea, "remove") <- NA
   )
   expect_identical(
-    blanks(sea),
+    quiet(blanks(sea)),
     tibble::tibble(rate = rate1, well = character())
   )
   expect_identical(
     blanks(`blanks<-`(sea, "reset")),
     init_blanks(sea@wells)
   ) |>
-    expect_message("Moving these outlier values to blanks")
+    expect_message("Moving these outlier values to blanks") |>
+    quiet()
   df1 <-
     tibble::tibble(
       rate = factor("OCR", levels = c("OCR", "ECAR")),
       well = "A02"
     )
-  expect_identical(blanks(`blanks<-`(sea, "replace", value = df1)), df1)
+  expect_identical(blanks(`blanks<-`(sea, "replace", value = df1)), df1) |>
+    quiet()
   blanks(sea, "add") <- df1
-  expect_identical(blanks(sea), df1)
+  expect_identical(blanks(sea), df1) |>
+    quiet()
   expect_identical(
     blanks(`blanks<-`(sea, "subtract", value = df1)),
     tibble::tibble(rate = rate1, well = character())
   ) |>
-    expect_message("Moving these blank wells to outliers")
+    expect_message("Moving these blank wells to outliers") |>
+    quiet()
 })
 
 test_that("blanks assignment errors", {

@@ -9,16 +9,28 @@ print_df <- function(x) {
   paste(utils::capture.output(print(x)), collapse = "\n")
 }
 
+print_wells <- function(x) {
+  x |>
+    dplyr::group_by(.data$rate) |>
+    dplyr::summarise(z = list(.data$well)) |>
+    tibble::deframe() |>
+    purrr::imap_chr(
+      \(x, nm) if (length(x) > 0 ) {
+        glue::glue(
+          "- {ifelse(nm == 'OCR', 'OCR ', nm)}:  ",
+          "{glue::glue_collapse(x, sep = ' ')}\n"
+        )
+      }
+    )
+}
+
+quiet <- function(x) {
+  sink(tempfile())
+  on.exit(sink())
+  invisible(force(x))
+}
 
 msd <- function(x, n = 3) {
   abs(x - stats::median(x)) / stats::mad(x) > n
 }
 
-
-summarise_to_well <- function(x, measurements) {
-  x |>
-    dplyr::group_by(.data$rate, .data$well) |>
-    dplyr::summarise(total = all(measurements %in% .data$measurement)) |>
-    dplyr::filter(.data$total) |>
-    dplyr::select(-"total")
-}
