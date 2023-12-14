@@ -22,7 +22,11 @@ setClass(
     OCR =      "list",
     pH =       "list",
     ECAR =     "list",
-    outliers = "list"
+    outliers = "list",
+    summary =  "list",
+    mst =      "list",
+    gst =      "list",
+    atp =      "list"
   )
 )
 

@@ -64,7 +64,7 @@ setMethod("levels", "Seahorse", function(x, blanks = TRUE, outliers = FALSE) {
       dplyr::mutate(
         sensor = ifelse(.data$rate == "OCR", "O2", "pH"),
         sensor = factor(.data$sensor, levels = c("O2", "pH"))
-        )
+      )
     df <-
       dplyr::anti_join(df, blanks_df, by = c("sensor", "well"))
   }
@@ -142,3 +142,175 @@ setMethod(
       dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "PER", "ECAR"))) |>
       dplyr::arrange(.data$rate)
   })
+
+
+# analyze -----------------------------------------------------------------
+
+setGeneric("analyze", function(x) standardGeneric("analyze"))
+
+#' @return `analyze()` returns a new `Seahorse` object with calculated
+#'     parameters for mitochondrial stress, glycolytic stress, and ATP
+#'     production rate experiments. These data are normalized if a normalization
+#'     factor is provided.
+#'
+#' @noRd
+#' @examples
+#' analyze(sheldon)
+setMethod("analyze", "Seahorse", function(x) {
+  x@summary <- summarize_rates(x)
+  x@mst <- summarize_mst(x)
+  x@gst <- summarize_gst(x)
+  x@atp <- summarize_atp(x)
+  x
+})
+
+summarize_rates <- function(x) {
+  rates(x, blanks = FALSE, outliers = FALSE, normalize = TRUE) |>
+    dplyr::group_by(.data$well, .data$group, .data$stage, .data$rate) |>
+    dplyr::mutate(
+      summary = dplyr::case_when(
+        .data$stage == "basal" ~ .data$value[which.max(.data$measurement)],
+        .data$rate == "OCR" & .data$stage == "oligo" ~ min(.data$value),
+        .data$rate != "OCR" & .data$stage == "oligo" ~ max(.data$value),
+        .data$stage == "fccp" ~ max(.data$value),
+        .data$rate == "OCR" & .data$stage == "rot/ama" ~ min(.data$value),
+        .data$rate != "OCR" & .data$stage == "rot/ama" ~ max(.data$value),
+        TRUE ~ .data$value[which.max(.data$measurement)]
+      )
+    ) |>
+    dplyr::select(-c("type", "measurement", "value")) |>
+    dplyr::ungroup() |>
+    dplyr::distinct() |>
+    dplyr::arrange(.data$rate, .data$group, .data$stage) |>
+    dplyr::rename(value = "summary")
+}
+
+
+summarize_mst <- function(x) {
+  stage <- x@stages
+  required_stages <- c("basal", "oligo", "fccp", "rot/ama")
+  missing_stages <- setdiff(required_stages, stage$stage)
+
+  if (length(missing_stages) > 0) {
+    rlang::inform(
+      glue::glue(
+        "A mito stress test requires basal, oligo, fccp, and rot/ama stages.\n",
+        "These stages are missing: ",
+        "{glue::glue_collapse(missing_stages, sep = ', ', last = ', and ')}."
+      )
+    )
+    return(list())
+  }
+
+  x@summary |>
+    dplyr::filter(.data$rate == "OCR") |>
+    dplyr::group_by(.data$well, .data$group) |>
+    dplyr::mutate(value = .data$value - .data$value[.data$stage == "rot/ama"]) |>
+    dplyr::summarise(
+      src = .data$value[.data$stage == "fccp"] /
+        .data$value[.data$stage == "basal"],
+      coupling = 1 - .data$value[.data$stage == "oligo"] /
+        .data$value[.data$stage == "basal"]
+    ) |>
+    dplyr::ungroup() |>
+    tidyr::pivot_longer(
+      c("src", "coupling"),
+      names_to = "rate",
+      values_to = "value"
+    ) |>
+    dplyr::arrange(.data$rate, .data$group)
+}
+
+
+summarize_gst <- function(x) {
+  stage <- x@stages
+  required_stages <- c("basal", "oligo")
+  missing_stages <- setdiff(required_stages, stage$stage)
+
+  if (length(missing_stages) > 0) {
+    rlang::inform(
+      glue::glue(
+        "A glyco stress test requires basal and oligo stages.\n",
+        "These stages are missing: ",
+        "{glue::glue_collapse(missing_stages, sep = ' and ')}."
+      )
+    )
+    return(list())
+  }
+
+  x@summary |>
+    dplyr::filter(.data$rate != "OCR") |>
+    dplyr::group_by(.data$well, .data$group) |>
+    dplyr::summarise(
+      gst = .data$value[.data$stage == "oligo"] /
+        .data$value[.data$stage == "basal"]
+    ) |>
+    dplyr::ungroup() |>
+    dplyr::arrange(.data$group) |>
+    tidyr::pivot_longer(
+      "gst",
+      names_to = "rate",
+      values_to = "value"
+    )
+}
+
+
+summarize_atp <- function(x) {
+  missing <- vector("character")
+  if (is.na(x@cf)) {
+    missing <- c(missing, "cf")
+  }
+  if (is.na(x@bf)) {
+    missing <- c(missing, "bf")
+  }
+  stage <- x@stages
+  required_stages <- c("basal", "oligo", "rot/ama")
+  missing_stages <- setdiff(required_stages, stage$stage)
+  if (length(missing_stages) > 0) {
+    missing <- c(missing_stages, missing)
+  }
+
+  if (length(missing) > 0) {
+    rlang::inform(
+      glue::glue(
+        "ATP rate calculations require basal, oligo, and rot/ama stages;\n",
+        "a carbon dioxide correction factor (cf);\n",
+        "and a medium buffer factor (bf).\n",
+        "These items are missing: ",
+        "{glue::glue_collapse(missing, sep = ', ', last = ', and ')}."
+      )
+    )
+    return(list())
+  }
+
+  df <- x@summary
+
+  mito <-
+    df |>
+    dplyr::filter(.data$rate == "OCR") |>
+    dplyr::group_by(.data$well, .data$group) |>
+    dplyr::summarise(
+      ATP_mito = (.data$value[.data$stage == "basal"] - .data$value[.data$stage == "oligo"]) * 2 * 2.75
+    )
+
+  df |>
+    tidyr::pivot_wider(names_from = "rate", values_from = "value") |>
+    dplyr::group_by(.data$well) |>
+    dplyr::mutate(
+      mito_OCR = .data$OCR - .data$OCR[.data$stage == "rot/ama"],
+      mito_PER = .data$mito_OCR * x@cf,
+      ATP_glyco = .data$PER - .data$mito_PER
+    ) |>
+    dplyr::left_join(mito, by = c("well", "group")) |>
+    dplyr::ungroup() |>
+    dplyr::filter(.data$stage == "basal") |>
+    dplyr::select("well", "group", "ATP_glyco", "ATP_mito") |>
+    tidyr::pivot_longer(
+      c("ATP_glyco", "ATP_mito"),
+      names_to = "rate",
+      values_to = "value",
+      names_prefix = "ATP_"
+    ) |>
+    dplyr::mutate(rate = factor(.data$rate, levels = c("mito", "glyco"))) |>
+    dplyr::arrange(.data$rate, .data$group, .data$well)
+}

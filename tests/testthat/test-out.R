@@ -90,3 +90,8 @@ test_that("blanks handled", {
     "Moving these outlier wells to blanks"
   )
 })
+
+
+test_that("findOut works", {
+  expect_snapshot(findOut(sea))
+})
