@@ -81,7 +81,7 @@ measurement <- 1:12
 stage <- rep(LETTERS[1:4], each = 3)
 stages <- list(measurement = measurement, stage = stage)
 cells <- list(well = well, value = 20000)
-Seahorse(path, wells, stages, cells, units = "cell", bf = 2.4, cdcf = 0.41)
+Seahorse(path, wells, stages, cells, units = "cell", bf = 2.4, cf = 0.41)
 
 }
 \seealso{

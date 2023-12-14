@@ -39,18 +39,8 @@ type <-
     "blank"
   )
 
-group <-
-  c(
-    NA,
-    rep("A", 4),
-    rep("B", 4),
-    NA,
-    rep("C", 4),
-    NA,
-    rep("D", 4),
-    rep("E", 4),
-    NA
-  )
+group <- rep(LETTERS[1:4], each = 6)
+group[c(1, 10, 15, 24)] <- "blank"
 
 wells_ex <- list(well = wells_24, type = type, group = group)
 
