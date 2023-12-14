@@ -1,0 +1,190 @@
+---
+title: "Finding Outliers"
+output: 
+  html_document:
+    df_print: paged
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  fig.align = "center", 
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+
+```{r setup, message = FALSE}
+library(seahorse)
+library(tidyverse)
+library(scales)
+```
+
+## Introduction
+
+One of the main goals of the `seahorse` package is to facilitate outlier 
+detection both among technical replicates in a `Seahorse` object and among 
+biological replicates across experiments in a `Herd` object. This document 
+serves to illustrate the approach taken by this package and to record the 
+rationale for decisions.
+
+## Data
+
+First, we will create a `seahorse` object. Since this automatically identifies 
+outliers, we will remove all blank and outlier assignments prior to our 
+analysis. 
+
+```{r, message = FALSE}
+path <- 
+  system.file(
+    "extdata/raw_1.xlsx", 
+    package = "seahorse", 
+    mustWork = TRUE
+  )
+
+cells <- 
+  format_cells(
+    system.file(
+      "extdata/counts_1.csv", 
+      package = "seahorse", 
+      mustWork = TRUE
+    )
+  )
+
+x <- 
+  Seahorse(
+    path = path, 
+    wells = wells_ex, 
+    stages = stages_mst,
+    cells = cells
+  )
+blanks(x, "remove") <- NA
+outliers(x, "remove") <- NA
+
+df <- rates(x, blanks = TRUE, outliers = TRUE, normalize = FALSE)
+```
+
+```{r}
+p1 <- 
+  ggplot(df) +
+  facet_grid(
+    rows = vars(rate), 
+    cols = vars(group), 
+    scales = "free_y"
+  ) +
+  aes(
+    x = measurement, 
+    y = value
+  ) +
+  geom_line(
+    aes(
+      color = group, 
+      group = well
+    ), 
+    show.legend = FALSE
+  ) +
+  scale_x_continuous(breaks = pretty_breaks())
+p1 +
+  labs(title = "Raw data")
+```
+
+## Identifying Outliers
+
+The data for each group are fit using a robust linear model accounting for time 
+and stage. Several model formulas were considered. The current formula, _value ~ 
+measurement * stage_, accounts for changing data values within an interval 
+across subsequent measurements. An alternative approach uses _value ~ 
+factor(measurement)_, which will fit the median of each measurement as the 
+summary values. Generally, robust linear models with `MASS::rlm` returned 
+similar values as ordinary least square fits with `stats::lm`. 
+
+```{r}
+models <- 
+  df |> 
+  group_by(rate, group, type) |> 
+  nest() |> 
+  mutate(
+    model = map(
+      data, 
+      \(x) MASS::rlm(value ~ measurement * stage, data = x, maxit = 100)
+    ), 
+    fit = map(model, fitted),
+    res = map(model, residuals),
+    se = map(res, \(x) x ^ 2)
+  ) |> 
+  unnest(c(data, fit, res, se))
+
+fits <- 
+  models |> 
+  select(type:stage, fit)
+```
+
+```{r}
+p1 + 
+  geom_line(
+    data = fits, 
+    aes(y = fit), 
+    linewidth = 1
+  ) +
+  labs(
+    title = "Model fits"
+  )
+```
+
+The squared residuals between the model fit and data values for each 
+well are calculated. The wells with a sum of squared residuals greater than 
+four times the median absolute deviation for the group are identified as 
+outliers.
+
+```{r, message = FALSE, tab.cap = "Groups with outliers", rows.print = 5}
+out <- 
+  models |> 
+  group_by(rate, group, well) |> 
+  summarize(sse = sum(se)) |> 
+  mutate(outlier = abs(sse - stats::median(sse)) / stats::mad(sse) > 4) 
+
+out |> 
+  group_by(rate, group) |> 
+  filter(any(outlier))
+```
+
+```{r}
+df |> 
+  left_join(out, by = c("rate", "group", "well")) |> 
+  ggplot() +
+  facet_grid(
+    rows = vars(rate), 
+    cols = vars(group), 
+    scales = "free_y"
+  ) +
+  aes(
+    x = measurement, 
+    y = value
+  ) +
+  geom_line(
+    aes(
+      color = group, 
+      group = well, 
+      linetype = outlier
+    ), 
+    show.legend = FALSE
+  ) +
+  scale_x_continuous(breaks = pretty_breaks()) +
+  labs(
+    title = "Outlier wells"
+  )
+```
+
+## Notes
+
+Using a similar approach, one can attempt to identify outlying data points. I 
+was not able to find an approach that successfully excluded relatively few 
+outlying data points. 
+
+One group has suggested that these analysis should use log-transformed rate 
+values. In these example data, better fits were acheived with non-transformed 
+values. 
+
+Outlier wells should be identified after normalization. In this example, 
+non-normalized values were analyzed for aesthetic reasons related to blank 
+value plotting.
