@@ -80,9 +80,9 @@ setMethod("outliers<-", "Seahorse", function(
         "Outliers data.frame column names must be 'rate' and 'well'"
       )
     }
-    if (all(value$rate %nin% c("OCR", "ECAR"))) {
+    if (all(value$rate %nin% c("OCR", "ECAR", "PER"))) {
       rlang::abort(
-        "Outliers data.frame rate column must contain only 'OCR' or 'ECAR'"
+        "Outliers data.frame rate column must contain only 'OCR', 'ECAR', or 'PER'"
       )
     }
     wells <- value$well
@@ -91,7 +91,7 @@ setMethod("outliers<-", "Seahorse", function(
     }
     value <-
       tibble::tibble(value) |>
-      dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "ECAR")))
+      dplyr::mutate(rate = factor(.data$rate, levels = c("OCR", "ECAR", "PER")))
   }
 
   # generate new values

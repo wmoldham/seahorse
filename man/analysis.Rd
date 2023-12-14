@@ -47,7 +47,7 @@ exclude outliers.
 }
 \section{Functions}{
 \itemize{
-\item \code{levels()}: The O~2~ and pH measurements used to calculate oxygen
+\item \code{levels()}: The O2 and pH measurements used to calculate oxygen
 consumption and extracellular acidification rates, respectively.
 
 \item \code{rates()}: The oxygen consumption and extracellular acidification

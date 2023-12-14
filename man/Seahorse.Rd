@@ -73,13 +73,12 @@ identified and removed.
 \examples{
 path <- system.file("extdata/raw_1.xlsx", package = "seahorse", mustWork = TRUE)
 well <- wells_24
-type <- c("blank", rep("sample", 8), "blank", rep("sample", 4), "blank", rep("sample", 8), "blank")
-x <- rep(LETTERS[1:5], each = 4)
-group <- replace(type, which(type == "sample"), x)
+type <- rep("sample", 24)
+type[c(1, 10, 15, 24)] <- "blank"
+group <- rep(LETTERS[1:5], each = 4)
+group[type == "blank"] <- "blank"
 wells <- list(well = well, type = type, group = group)
-measurement <- 1:12
-stage <- rep(LETTERS[1:4], each = 3)
-stages <- list(measurement = measurement, stage = stage)
+stages <- stages_mst
 cells <- list(well = well, value = 20000)
 Seahorse(path, wells, stages, cells, units = "cell", bf = 2.4, cf = 0.41)
 

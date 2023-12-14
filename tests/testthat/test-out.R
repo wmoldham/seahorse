@@ -24,7 +24,7 @@ test_that("outliers assignment format", {
   )
   expect_error(
     `outliers<-`(sea, "add", value = data.frame(rate = "x", well = 1)),
-    "Outliers data.frame rate column must contain only 'OCR' or 'ECAR'"
+    "Outliers data.frame rate column must contain only 'OCR', 'ECAR', or 'PER'"
   )
   expect_error(
     `outliers<-`(sea, "add", value = data.frame(rate = "OCR", well = 1)),
