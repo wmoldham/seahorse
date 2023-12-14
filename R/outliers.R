@@ -176,7 +176,12 @@ setMethod("outliers<-", "Seahorse", function(
       suppressWarnings() |>
       suppressMessages()
   }
-
+  # update analysis
+  if (!dplyr::setequal(old_values, new_values)) {
+    suppressMessages({
+      x <- analyze(x)
+    })
+  }
   x
 })
 

@@ -2,6 +2,10 @@
 
 export(Seahorse)
 export(format_cells)
+export(summarize_atp)
+export(summarize_gst)
+export(summarize_mst)
+export(summarize_rates)
 exportMethods("blanks<-")
 exportMethods("outliers<-")
 exportMethods(blanks)

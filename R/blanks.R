@@ -207,6 +207,10 @@ setMethod("blanks<-", "Seahorse", function(
   if (ecar_changed) {
     x@ECAR <- rate_pH(x@pH, x@blanks)
   }
-
+  if (any(ocr_changed, ecar_changed)) {
+    suppressMessages({
+      x <- analyze(x)
+    })
+  }
   x
 })
