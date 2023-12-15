@@ -28,9 +28,11 @@ wells_24 <-
     rep(sprintf("%02d", 1:6), 4)
   )
 
-group <- rep(LETTERS[1:4], each = 6)
-group[c(1, 10, 15, 24)] <- "blank"
-type <- ifelse(group == "blank", "blank", "sample")
+type <- rep("sample", 24)
+type[c(1, 10, 15, 24)] <- "blank"
+
+groups <- rep(LETTERS[1:5], each = 4)
+group <- replace(type, type == "sample", groups)
 
 wells_ex <- list(well = wells_24, type = type, group = group)
 
