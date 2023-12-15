@@ -34,3 +34,12 @@ msd <- function(x, n = 3) {
   abs(x - stats::median(x)) / stats::mad(x) > n
 }
 
+remove_outliers <- function(x, y, groups, n = 3) {
+  x |>
+    dplyr::group_by(
+      dplyr::across(tidyselect::all_of(groups))
+    ) |>
+    dplyr::mutate(outliers = msd(.data[[y]], n)) |>
+    dplyr::filter(!.data$outliers) |>
+    dplyr::select(-"outliers")
+}

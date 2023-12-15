@@ -8,16 +8,19 @@
 \alias{summarize_atp}
 \title{Analysis functions for Seahorse rate data}
 \usage{
-summarize_rates(x)
+summarize_rates(x, remove_outliers = FALSE)
 
-summarize_mst(x)
+summarize_mst(x, remove_outliers = TRUE)
 
-summarize_gst(x)
+summarize_gst(x, remove_outliers = TRUE)
 
-summarize_atp(x, bf, cf)
+summarize_atp(x, bf, cf, remove_outliers = TRUE)
 }
 \arguments{
 \item{x}{A data.frame returned by \code{rates()}.}
+
+\item{remove_outliers}{Should outliers based on median absolutely deviation
+be removed?}
 
 \item{bf}{The buffer factor of the assay medium.}
 

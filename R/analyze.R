@@ -21,6 +21,8 @@ NULL
 #' @param x A data.frame returned by `rates()`.
 #' @param bf The buffer factor of the assay medium.
 #' @param cf The carbon dioxide correction factor.
+#' @param remove_outliers Should outliers based on median absolutely deviation
+#'     be removed?
 NULL
 
 
@@ -37,8 +39,8 @@ setGeneric("analyze", function(x) standardGeneric("analyze"))
 #' @examples
 #' analyze(sheldon)
 setMethod("analyze", "Seahorse", function(x) {
-  df <- rates(x, blanks = FALSE, outliers = FALSE, normalize = TRUE)
-  x@summary <- summarize_rates(df)
+  df <- rates(x, blanks = FALSE, outliers = TRUE, normalize = TRUE)
+  x@summary <- summarize_rates(df, remove_outliers = TRUE)
   x@mst <- summarize_mst(df)
   x@gst <- summarize_gst(df)
   x@atp <- summarize_atp(df, x@bf, x@cf)
@@ -52,25 +54,32 @@ setMethod("analyze", "Seahorse", function(x) {
 #'     returned. For any other interval, the value of the last measurement in
 #'     the interval is returned.
 #' @export
-summarize_rates <- function(x) {
-  x |>
+summarize_rates <- function(x, remove_outliers = FALSE) {
+  out <-
+    x |>
     dplyr::group_by(.data$well, .data$group, .data$stage, .data$rate) |>
     dplyr::mutate(
       summary = dplyr::case_when(
         .data$stage == "basal" ~ .data$value[which.max(.data$measurement)],
-        .data$rate == "OCR" & .data$stage == "oligo" ~ min(.data$value),
+        # .data$rate == "OCR" & .data$stage == "oligo" ~ min(.data$value),
         .data$rate != "OCR" & .data$stage == "oligo" ~ max(.data$value),
         .data$stage == "fccp" ~ max(.data$value),
-        .data$rate == "OCR" & .data$stage == "rot/ama" ~ min(.data$value),
+        # .data$rate == "OCR" & .data$stage == "rot/ama" ~ min(.data$value),
         .data$rate != "OCR" & .data$stage == "rot/ama" ~ max(.data$value),
         TRUE ~ .data$value[which.max(.data$measurement)]
       )
     ) |>
     dplyr::select(-c("type", "measurement", "value")) |>
-    dplyr::ungroup() |>
-    dplyr::distinct() |>
+    dplyr::distinct()
+
+  if (remove_outliers) {
+    out <- remove_outliers(out, "summary", c("rate", "group", "stage"))
+  }
+
+  out |>
     dplyr::arrange(.data$rate, .data$group, .data$stage) |>
-    dplyr::rename(value = "summary")
+    dplyr::rename(value = "summary") |>
+    dplyr::ungroup()
 }
 
 
@@ -80,7 +89,7 @@ summarize_rates <- function(x) {
 #'     Both values are expressed as the fold change relative to the basal OCR
 #'     after subtracting non-mitochondrial OCR.
 #' @export
-summarize_mst <- function(x) {
+summarize_mst <- function(x, remove_outliers = TRUE) {
   df <- summarize_rates(x)
   required_stages <- c("basal", "oligo", "fccp", "rot/ama")
   missing_stages <- setdiff(required_stages, df$stage)
@@ -96,9 +105,10 @@ summarize_mst <- function(x) {
     return(list())
   }
 
-  df |>
+  out <-
+    df |>
     dplyr::filter(.data$rate == "OCR") |>
-    dplyr::group_by(.data$well, .data$group) |>
+    dplyr::group_by(.data$group, .data$well) |>
     dplyr::mutate(
       value = .data$value - .data$value[.data$stage == "rot/ama"]
     ) |>
@@ -108,12 +118,18 @@ summarize_mst <- function(x) {
       coupling = 1 - .data$value[.data$stage == "oligo"] /
         .data$value[.data$stage == "basal"]
     ) |>
-    dplyr::ungroup() |>
     tidyr::pivot_longer(
       c("src", "coupling"),
       names_to = "rate",
       values_to = "value"
-    ) |>
+    )
+
+  if (remove_outliers) {
+    out <- remove_outliers(out, "value", c("rate", "group", "well"))
+  }
+
+  out |>
+    dplyr::ungroup() |>
     dplyr::arrange(.data$rate, .data$group)
 }
 
@@ -122,7 +138,7 @@ summarize_mst <- function(x) {
 #'     test requires stages labeled `basal` and `oligo`. The `gst` value is the
 #'     fold increase in ECAR or PER following oligomycin treatment.
 #' @export
-summarize_gst <- function(x) {
+summarize_gst <- function(x, remove_outliers = TRUE) {
   df <- summarize_rates(x)
   required_stages <- c("basal", "oligo")
   missing_stages <- setdiff(required_stages, df$stage)
@@ -138,20 +154,27 @@ summarize_gst <- function(x) {
     return(list())
   }
 
-  df |>
+  out <-
+    df |>
     dplyr::filter(.data$rate != "OCR") |>
-    dplyr::group_by(.data$well, .data$group) |>
+    dplyr::group_by(.data$group, .data$well) |>
     dplyr::summarise(
       gst = .data$value[.data$stage == "oligo"] /
         .data$value[.data$stage == "basal"]
     ) |>
-    dplyr::ungroup() |>
     dplyr::arrange(.data$group) |>
     tidyr::pivot_longer(
       "gst",
       names_to = "rate",
       values_to = "value"
     )
+
+  if (remove_outliers) {
+    out <- remove_outliers(out, "value", c("group"))
+  }
+
+  out |>
+    dplyr::ungroup()
 }
 
 #' @describeIn analyze Calculates the mitochondrial and glycolytic ATP
@@ -159,7 +182,7 @@ summarize_gst <- function(x) {
 #'     `rot/ama`. In addition, the assay medium buffer factor (`bf`) and carbon
 #'     dioxide correction factor (`cf`) must also be provided.
 #' @export
-summarize_atp <- function(x, bf, cf) {
+summarize_atp <- function(x, bf, cf, remove_outliers = TRUE) {
   missing <- vector("character")
   missing <- vector("character")
   if (is.na(bf)) {
@@ -190,13 +213,14 @@ summarize_atp <- function(x, bf, cf) {
   mito <-
     df |>
     dplyr::filter(.data$rate == "OCR") |>
-    dplyr::group_by(.data$well, .data$group) |>
+    dplyr::group_by(.data$group, .data$well) |>
     dplyr::summarise(
       ATP_mito = (.data$value[.data$stage == "basal"] -
                     .data$value[.data$stage == "oligo"]) * 2 * 2.75
     )
 
-  df |>
+  out <-
+    df |>
     tidyr::pivot_wider(names_from = "rate", values_from = "value") |>
     dplyr::group_by(.data$well) |>
     dplyr::mutate(
@@ -214,6 +238,13 @@ summarize_atp <- function(x, bf, cf) {
       values_to = "value",
       names_prefix = "ATP_"
     ) |>
-    dplyr::mutate(rate = factor(.data$rate, levels = c("mito", "glyco"))) |>
+    dplyr::mutate(rate = factor(.data$rate, levels = c("mito", "glyco")))
+
+  if (remove_outliers) {
+    out <- remove_outliers(out, "value", c("rate", "group"))
+  }
+
+  out |>
+    dplyr::ungroup() |>
     dplyr::arrange(.data$rate, .data$group, .data$well)
 }
