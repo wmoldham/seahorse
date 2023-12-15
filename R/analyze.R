@@ -99,7 +99,9 @@ summarize_mst <- function(x) {
   df |>
     dplyr::filter(.data$rate == "OCR") |>
     dplyr::group_by(.data$well, .data$group) |>
-    dplyr::mutate(value = .data$value - .data$value[.data$stage == "rot/ama"]) |>
+    dplyr::mutate(
+      value = .data$value - .data$value[.data$stage == "rot/ama"]
+    ) |>
     dplyr::summarise(
       src = .data$value[.data$stage == "fccp"] /
         .data$value[.data$stage == "basal"],
@@ -164,7 +166,7 @@ summarize_atp <- function(x, bf, cf) {
     missing <- c(missing, "bf")
   }
   if (is.na(cf)) {
-    missing <- c(missing, "cdcf")
+    missing <- c(missing, "cf")
   }
   df <- summarize_rates(x)
   required_stages <- c("basal", "oligo", "rot/ama")
@@ -176,7 +178,7 @@ summarize_atp <- function(x, bf, cf) {
     rlang::inform(
       glue::glue(
         "ATP rate calculations require basal, oligo, and rot/ama stages;\n",
-        "a carbon dioxide correction factor (cdcf);\n",
+        "a carbon dioxide correction factor (cf);\n",
         "and a medium buffer factor (bf).\n",
         "These items are missing: ",
         "{glue::glue_collapse(missing, sep = ', ', last = ', and ')}."
@@ -190,7 +192,8 @@ summarize_atp <- function(x, bf, cf) {
     dplyr::filter(.data$rate == "OCR") |>
     dplyr::group_by(.data$well, .data$group) |>
     dplyr::summarise(
-      ATP_mito = (.data$value[.data$stage == "basal"] - .data$value[.data$stage == "oligo"]) * 2 * 2.75
+      ATP_mito = (.data$value[.data$stage == "basal"] -
+                    .data$value[.data$stage == "oligo"]) * 2 * 2.75
     )
 
   df |>
