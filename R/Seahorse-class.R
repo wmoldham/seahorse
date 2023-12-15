@@ -146,7 +146,10 @@ setMethod("initialize", "Seahorse", function(
   .Object@pH <- level_pH(.Object@raw, .Object@config)
   .Object@ECAR <- rate_pH(.Object@pH, .Object@blanks)
   .Object@outliers <- tibble::tibble(rate = factor(), well = character())
-  outliers(.Object, "add") <- findOut(.Object)
+  out <- findOut(.Object)
+  if (nrow(out) != 0) {
+    outliers(.Object, "add") <- out
+  }
   suppressMessages({
     .Object <- analyze(.Object)
   })

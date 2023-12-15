@@ -12,6 +12,15 @@
 \alias{levels}
 \alias{levels,Seahorse-method}
 \alias{rates,Seahorse-method}
+\alias{summary}
+\alias{summary,Seahorse-method}
+\alias{summary,Herd-method}
+\alias{mst,Seahorse-method}
+\alias{mst,Herd-method}
+\alias{gst,Seahorse-method}
+\alias{gst,Herd-method}
+\alias{atp,Seahorse-method}
+\alias{atp,Herd-method}
 \title{Accessors for analysis output}
 \usage{
 levels(x, ...)
@@ -21,6 +30,30 @@ levels(x, ...)
 rates(x, ...)
 
 \S4method{rates}{Seahorse}(x, blanks = TRUE, outliers = FALSE, normalize = TRUE)
+
+summary(object, ...)
+
+\S4method{summary}{Seahorse}(object)
+
+\S4method{summary}{Herd}(object)
+
+mst(x)
+
+\S4method{mst}{Seahorse}(x)
+
+\S4method{mst}{Herd}(x)
+
+gst(x)
+
+\S4method{gst}{Seahorse}(x)
+
+\S4method{gst}{Herd}(x)
+
+atp(x, ...)
+
+\S4method{atp}{Seahorse}(x, format = c("table", "scatter", "bar"))
+
+\S4method{atp}{Herd}(x, format = c("table", "scatter", "bar"))
 }
 \arguments{
 \item{x}{An \strong{R} object. Currently there are methods for
@@ -35,6 +68,11 @@ rates(x, ...)
 \item{normalize}{Divide values by normalization factor?}
 
 \item{object}{An \strong{R} object.}
+
+\item{format}{Three output options are available. For \code{table}, ATP production
+rates are returned in table format. For \code{scatter}, the data are formatted
+for an \emph{x}-\emph{y} scatter plot. For \code{bar}, the data return as a list of
+summarized data and points for a stacked bar plot.}
 }
 \description{
 These functions access calculated values from \code{Seahorse} or
@@ -53,6 +91,23 @@ consumption and extracellular acidification rates, respectively.
 \item \code{rates()}: The oxygen consumption and extracellular acidification
 or proton efflux rates.
 
+\item \code{summary()}: For \code{basal}, measurements, the last value of the stage
+is returned. For \code{oligo} and \code{rot/ama} OCR measurements, the minimum
+value of the stage is returned. For the ECAR/PER measurements, the
+maximum value of the stage is returned. For all other stages, the last
+value in the stage is returned for both OCR and ECAR.
+
+\item \code{mst()}: Values calculated from a mitochondrial stress assay.
+The spare respiratory capacity (\code{src}) is the ratio of FCCP / basal OCR
+after subtracting non-mitochondrial OCR (\emph{i.e.,} OCR following rotenone
+and antimycin A treatment). The \code{coupling} fraction is the proportion of
+basal OCR dedicated to ATP production.
+
+\item \code{gst()}: The fold increase in ECAR or PER following oligomycin.
+
+\item \code{atp()}: The ATP production rates from oxidative phosphorylation
+(\code{mito}) and glycolysis (\code{glyco}).
+
 }}
 \examples{
 levels(sheldon)
@@ -60,4 +115,7 @@ levels(sheldon, blanks = FALSE, outliers = FALSE)
 
 rates(sheldon)
 rates(sheldon, blanks = FALSE, outliers = FALSE)
+summary(sheldon)
+summary(herd)
+
 }
