@@ -3,6 +3,6 @@
     Code
       blanks(sea)
     Output
-      - OCR :  A01 B04 C03
+      - OCR :  A01 B04 C03 D06
       - ECAR:  A01 B04 C03 D06
 

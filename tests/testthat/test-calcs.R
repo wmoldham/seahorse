@@ -1,7 +1,6 @@
 # test-calcs.R
 
 test_that("levels", {
-  suppressMessages(outliers(sea, "remove") <- NA)
   O2_inst <- dplyr::filter(sea@raw, sensor == "O2")
   O2 <- sea@O2
   O2_test <- dplyr::inner_join(O2, O2_inst, by = c("measurement", "well", "time"))
@@ -14,7 +13,6 @@ test_that("levels", {
 })
 
 test_that("rates", {
-  suppressMessages(outliers(sea, "remove") <- NA)
   rates <-
     readxl::read_excel(.path, sheet = "Rate") |>
     dplyr::filter(Group != "Background") |>

@@ -53,27 +53,31 @@
     Code
       sea@blanks
     Output
-      # A tibble: 7 x 2
+      # A tibble: 8 x 2
         rate  well 
         <fct> <chr>
       1 OCR   A01  
       2 OCR   B04  
       3 OCR   C03  
-      4 ECAR  A01  
-      5 ECAR  B04  
-      6 ECAR  C03  
-      7 ECAR  D06  
+      4 OCR   D06  
+      5 ECAR  A01  
+      6 ECAR  B04  
+      7 ECAR  C03  
+      8 ECAR  D06  
 
 # outliers formatted correctly
 
     Code
       sea@outliers
     Output
-      # A tibble: 4 x 2
+      # A tibble: 7 x 2
         rate  well 
         <fct> <chr>
-      1 OCR   B05  
-      2 OCR   D04  
-      3 OCR   D05  
-      4 OCR   D06  
+      1 OCR   A03  
+      2 OCR   A04  
+      3 OCR   B05  
+      4 OCR   C02  
+      5 OCR   C04  
+      6 OCR   D04  
+      7 OCR   D05  
 

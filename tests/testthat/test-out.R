@@ -8,8 +8,7 @@ test_that("outliers assignment format", {
   expect_warning(
     `outliers<-`(sea, "remove", value = 1),
     "Replacement values provided but ignored"
-  ) |>
-    expect_message("Moving these outlier wells to blanks")
+  )
   expect_error(
     `outliers<-`(sea, "add", value = 1),
     "'value' must be a data.frame"

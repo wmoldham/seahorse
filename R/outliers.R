@@ -80,7 +80,7 @@ setMethod("outliers<-", "Seahorse", function(
         "Outliers data.frame column names must be 'rate' and 'well'"
       )
     }
-    if (all(value$rate %nin% c("OCR", "ECAR", "PER"))) {
+    if (length(value$rate) != 0 && all(value$rate %nin% c("OCR", "ECAR", "PER"))) {
       rlang::abort(
         "Outliers data.frame rate column must contain only 'OCR', 'ECAR', or 'PER'"
       )
@@ -242,7 +242,7 @@ setMethod("findOut", "Seahorse", function(x, blanks = TRUE, outliers = FALSE, ..
       mse = mean(.data$se, na.rm = TRUE)
     ) |>
     dplyr::group_by(.data$group) |>
-    dplyr::mutate(outlier = msd(.data$mse, n = 4)) |>
+    dplyr::mutate(outlier = msd(.data$mse, n = 3)) |>
     dplyr::filter(.data$outlier) |>
     dplyr::ungroup() |>
     dplyr::select("rate", "well")

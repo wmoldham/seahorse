@@ -85,7 +85,6 @@ test_that("blanks assignment errors", {
     "These wells are not currently blanks:"
   ) |>
     expect_message("Moving these blank wells to outliers")
-  suppressMessages(blanks(sea, "reset") <- NA)
   expect_warning(`blanks<-`(sea, "reset"), "Blanks unchanged")
 })
 
