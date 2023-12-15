@@ -17,7 +17,7 @@ print_wells <- function(x) {
     purrr::imap_chr(
       \(x, nm) if (length(x) > 0 ) {
         glue::glue(
-          "- {ifelse(nm == 'OCR', 'OCR ', nm)}:  ",
+          "- {ifelse(nm != 'ECAR', paste0(nm, ' '), nm)}:  ",
           "{glue::glue_collapse(x, sep = ' ')}\n"
         )
       }

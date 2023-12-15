@@ -16,7 +16,6 @@
 }
 }
 \description{
-These objects should facilitate creation of experimental designs for
-\code{Seahorse} object construction.
+These objects should help with \code{Seahorse} object construction.
 }
 \keyword{datasets}
