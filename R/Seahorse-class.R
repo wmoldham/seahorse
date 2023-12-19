@@ -260,21 +260,21 @@ setMethod("show", "Seahorse", function(object) {
   cat(print_wells(object@blanks), sep = "\n")
   cat("Outliers --------------------\n")
   cat(print_wells(object@outliers), sep = "\n")
-  # cat("Analyses --------------------\n")
-  # analyses <- list()
-  # if (length(object@mst) != 0) {
-  #   analyses <- c("- Mitochondrial stress\n")
-  # }
-  # if (length(object@gst) != 0) {
-  #   analyses <- c(analyses, "- Glycolysis stress\n")
-  # }
-  # if (length(object@atp) != 0) {
-  #   analyses <- c(analyses, "- ATP production\n")
-  # }
-  # if (length(analyses) == 0) {
-  #   cat("- None\n")
-  # } else {
-  #   purrr::map(analyses, cat)
-  # }
+  cat("Analyses --------------------\n")
+  analyses <- list()
+  if (length(object@mst) != 0) {
+    analyses <- c(analyses, "- Mitochondrial stress\n")
+  }
+  if (length(object@gst) != 0) {
+    analyses <- c(analyses, "- Glycolysis stress\n")
+  }
+  if (length(object@atp) != 0) {
+    analyses <- c(analyses, "- ATP production\n")
+  }
+  if (length(analyses) == 0) {
+    cat("- None\n")
+  } else {
+    purrr::map(analyses, cat)
+  }
   cat("\n")
 })
