@@ -98,6 +98,7 @@ setMethod(
 #'     `atp` = Plot ATP rate assay results.}
 #' @param group Plot summary data for each experimental group or data from
 #'     individual experiments separately.
+#' @param outliers Should outliers be included in the plot?
 #' @param type Plot ATP rate data as a "scatter" plot or "bar" plot.
 #' @param ... Additional arguments passed along to `rates()`, including
 #'     `outliers`.
@@ -115,14 +116,14 @@ setMethod(
     x,
     y = c("rates", "summary", "mst", "gst", "atp"),
     group = TRUE,
-    type = c("scatter", "bar"),
-    ...
+    outliers = TRUE,
+    type = c("scatter", "bar")
   ) {
     z <- rlang::arg_match(y)
     type <- rlang::arg_match(type)
     switch(
       z,
-      rates = plot_rates(x, group = group, ...),
+      rates = plot_rates(x, group = group, outliers = outliers),
       summary = plot_summary(x),
       mst = plot_mst(x),
       gst = plot_gst(x),

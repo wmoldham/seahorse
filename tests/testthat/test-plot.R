@@ -52,3 +52,66 @@ test_that("seahorse rates works", {
     plot(harold, "rates", outliers = FALSE, group = FALSE)
   )
 })
+
+test_that("herd rates works", {
+  vdiffr::expect_doppelganger(
+    "herd-rates-by-group",
+    plot(herd, "rates", group = TRUE)
+  )
+  vdiffr::expect_doppelganger(
+    "herd-rates-by-experiment",
+    plot(herd, "rates", group = FALSE)
+  )
+})
+
+test_that("summary plot works", {
+  vdiffr::expect_doppelganger(
+    "sea-summary",
+    plot(harold, "summary")
+  )
+  vdiffr::expect_doppelganger(
+    "herd-summary",
+    plot(herd, "summary")
+  )
+})
+
+test_that("mst plot works", {
+  vdiffr::expect_doppelganger(
+    "sea-mst",
+    plot(harold, "mst")
+  )
+  vdiffr::expect_doppelganger(
+    "herd-mst",
+    plot(herd, "mst")
+  )
+})
+
+test_that("gst plot works", {
+  vdiffr::expect_doppelganger(
+    "sea-gst",
+    plot(harold, "gst")
+  )
+  vdiffr::expect_doppelganger(
+    "herd-gst",
+    plot(herd, "gst")
+  )
+})
+
+test_that("atp plot works", {
+  vdiffr::expect_doppelganger(
+    "sea-atp-xy",
+    plot(harold, "atp", type = "scatter")
+  )
+  vdiffr::expect_doppelganger(
+    "sea-atp-bar",
+    plot(harold, "atp", type = "bar")
+  )
+  vdiffr::expect_doppelganger(
+    "herd-atp-xy",
+    plot(herd, "atp", type = "scatter")
+  )
+  vdiffr::expect_doppelganger(
+    "herd-atp-bar",
+    plot(herd, "atp", type = "bar")
+  )
+})
