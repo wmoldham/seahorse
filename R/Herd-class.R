@@ -73,6 +73,7 @@ setMethod("initialize", "Herd", function(.Object, ...) {
       experiment = character(),
       group = character()
     )
+
   .Object@summary <- map_condense(members, \(x) summary(x))
   suppressWarnings({
     .Object@mst <- map_condense(members, mst)

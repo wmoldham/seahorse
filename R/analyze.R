@@ -125,7 +125,7 @@ summarize_mst <- function(x, remove_outliers = TRUE) {
     )
 
   if (remove_outliers) {
-    out <- remove_outliers(out, "value", c("rate", "group", "well"))
+    out <- remove_outliers(out, "value", c("rate", "group"))
   }
 
   out |>
