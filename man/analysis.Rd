@@ -12,6 +12,7 @@
 \alias{levels}
 \alias{levels,Seahorse-method}
 \alias{rates,Seahorse-method}
+\alias{rates,Herd-method}
 \alias{summary}
 \alias{summary,Seahorse-method}
 \alias{summary,Herd-method}
@@ -30,6 +31,8 @@ levels(x, ...)
 rates(x, ...)
 
 \S4method{rates}{Seahorse}(x, blanks = TRUE, outliers = FALSE, normalize = TRUE)
+
+\S4method{rates}{Herd}(x, outliers = FALSE)
 
 summary(object, ...)
 
@@ -115,6 +118,8 @@ levels(sheldon, blanks = FALSE, outliers = FALSE)
 
 rates(sheldon)
 rates(sheldon, blanks = FALSE, outliers = FALSE)
+rates(herd)
+
 summary(sheldon)
 summary(herd)
 

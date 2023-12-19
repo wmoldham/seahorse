@@ -4,6 +4,8 @@
 \alias{plot}
 \alias{plot,Seahorse,character-method}
 \alias{Seahorse_plot}
+\alias{plot,Herd,character-method}
+\alias{Herd_plot}
 \title{Plot}
 \usage{
 plot(x, y, ...)
@@ -17,25 +19,31 @@ plot(x, y, ...)
   normalize = TRUE,
   type = c("scatter", "bar")
 )
+
+\S4method{plot}{Herd,character}(
+  x,
+  y = c("rates", "summary", "mst", "gst", "atp"),
+  group = TRUE,
+  outliers = TRUE,
+  type = c("scatter", "bar")
+)
 }
 \arguments{
 \item{x}{An \strong{R} object. The \code{seahorse} package describes methods for
 \link{Seahorse} and \linkS4class{Herd} objects.}
 
 \item{y}{\describe{
-\code{cells} = Plot normalization values. \cr
-\code{levels} = Plot levels. \cr
 \code{rates} = Plot rates. \cr
 \code{summary} = Plot summary data. \cr
 \code{mst} = Plot mito stress results. \cr
 \code{gst} = Plot glyco stress results. \cr
 \code{atp} = Plot ATP rate assay results.}}
 
-\item{...}{Additional arguments passed along to \code{levels()} or \code{rates()},
-including \code{blanks} and \code{outliers}.}
+\item{...}{Additional arguments passed along to \code{rates()}, including
+\code{outliers}.}
 
 \item{group}{Plot summary data for each experimental group or data from
-individual wells separately.}
+individual experiments separately.}
 
 \item{blanks}{Should blank wells be included in the plot?}
 
@@ -58,12 +66,20 @@ objects. The plots can include or exclude blank and outlier wells by
 passing these arguments to \code{levels()} and \code{rates()}. Similarly,
 non-normalized or normalized rate data may be reviewed.
 
+\item \code{plot(x = Herd, y = character)}: This method plots rate data from \code{Herd} objects. The plots
+can include or exclude outlier experiments by passing these arguments to
+\code{rates()}.
+
 }}
 \examples{
 plot(sheldon, "levels")
 plot(sheldon, "rates", group = FALSE)
 plot(sheldon, "rates", group = TRUE, blanks = TRUE)
 plot(sheldon, "rates", group = TRUE, blanks = FALSE)
+
+plot(herd, "rates")
+plot(herd, "rates", group = FALSE)
+plot(herd, "rates", group = FALSE, outliers = TRUE)
 
 }
 \seealso{

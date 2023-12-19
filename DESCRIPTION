@@ -34,6 +34,7 @@ Imports:
     readr,
     readxl,
     rlang,
+    rmarkdown,
     scales,
     slider,
     stringr,
@@ -57,5 +58,6 @@ Collate:
     'init.R'
     'outliers.R'
     'plot.R'
+    'report.R'
     'seahorse-package.R'
     'utils.R'
