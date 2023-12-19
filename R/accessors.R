@@ -180,6 +180,22 @@ setMethod("units<-", "Seahorse", function(x, value) {
   x
 })
 
+#' @export
+#' @rdname accessors
+#' @returns `units(x)` returns the character vector describing the normalization
+#'     units.
+setMethod("units", "Herd", function(x) x@units)
+
+#' @export
+#' @rdname accessors
+#' @details \describe{\item{`units:`}{A character vector describing the units of
+#'     the normalization factor. This will be used to annotate graphs.}}
+setMethod("units<-", "Herd", function(x, value) {
+  x@units <- value
+  methods::validObject(x)
+  x
+})
+
 
 # wells -------------------------------------------------------------------
 

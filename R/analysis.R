@@ -1,6 +1,7 @@
 # analysis.R
 
 #' @include Seahorse-class.R
+#' @include Herd-class.R
 NULL
 
 

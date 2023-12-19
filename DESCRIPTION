@@ -43,6 +43,7 @@ Depends:
 LazyData: true
 Config/Needs/website: rmarkdown
 Collate: 
+    'Herd-class.R'
     'Seahorse-class.R'
     'accessors.R'
     'analysis.R'

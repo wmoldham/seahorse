@@ -26,6 +26,8 @@
 \alias{stages<-,Seahorse-method}
 \alias{units,Seahorse-method}
 \alias{units<-,Seahorse-method}
+\alias{units,Herd-method}
+\alias{units<-,Herd-method}
 \alias{wells,Seahorse-method}
 \alias{wells<-,Seahorse-method}
 \title{Accessors for \code{seahorse} S4 objects}
@@ -52,6 +54,10 @@
 
 \S4method{units}{Seahorse}(x) <- value
 
+\S4method{units}{Herd}(x)
+
+\S4method{units}{Herd}(x) <- value
+
 \S4method{wells}{Seahorse}(x)
 
 \S4method{wells}{Seahorse}(x) <- value
@@ -74,6 +80,9 @@ experiment.
 
 \code{stages(x)} returns the experimental design details associated with
 each stage.
+
+\code{units(x)} returns the character vector describing the normalization
+units.
 
 \code{units(x)} returns the character vector describing the normalization
 units.
@@ -115,6 +124,9 @@ injections differ across the plate.}}
 \describe{\item{\verb{units:}}{A character vector describing the units of
 the normalization factor provided in the \code{value} column of \code{cells}. This
 will be used to annotate graphs.}}
+
+\describe{\item{\verb{units:}}{A character vector describing the units of
+the normalization factor. This will be used to annotate graphs.}}
 
 \describe{\item{\verb{wells:}}{A list or data frame containing vectors
 of experimental descriptors for each of the sample wells. \code{wells} must
