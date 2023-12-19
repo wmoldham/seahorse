@@ -256,10 +256,17 @@ setMethod("show", "Seahorse", function(object) {
   cat("Seahorse Experiment ---------\n")
   cat("- File: ", object@filename, "\n")
   cat("- Time: ", as.character(object@time), "\n")
+
   cat("Blanks ----------------------\n")
   cat(print_wells(object@blanks), sep = "\n")
+
   cat("Outliers --------------------\n")
-  cat(print_wells(object@outliers), sep = "\n")
+  if (nrow(object@outliers) == 0) {
+    cat("- None\n")
+  } else {
+    cat(print_wells(object@outliers), sep = "\n")
+  }
+
   cat("Analyses --------------------\n")
   analyses <- list()
   if (length(object@mst) != 0) {

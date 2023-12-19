@@ -124,7 +124,7 @@ setMethod("show", "Herd", function(object) {
   cat("Analyses -------------------\n")
   analyses <- list()
   if (length(object@mst) != 0) {
-    analyses <- c("- Mitochondrial stress\n")
+    analyses <- c(analyses, "- Mitochondrial stress\n")
   }
   if (length(object@gst) != 0) {
     analyses <- c(analyses, "- Glycolysis stress\n")
