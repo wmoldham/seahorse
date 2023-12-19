@@ -150,6 +150,21 @@ setMethod(
       dplyr::arrange(.data$rate)
   })
 
+#' @rdname analysis
+#' @export
+#' @examples
+#' rates(herd)
+#'
+setMethod("rates", "Herd", function(x, outliers = FALSE) {
+    if (!outliers) {
+      x@rates |>
+        dplyr::anti_join(x@outliers, by = c("rate", "experiment", "group"))
+    } else {
+      x@rates
+    }
+  }
+)
+
 
 # summary -----------------------------------------------------------------
 

@@ -84,6 +84,54 @@ setMethod(
 )
 
 
+# Herd --------------------------------------------------------------------
+
+#' @export
+#' @describeIn plot This method plots rate data from `Herd` objects. The plots
+#'     can include or exclude outlier experiments by passing these arguments to
+#'     `rates()`.
+#' @param y \describe{
+#'     `rates` = Plot rates. \cr
+#'     `summary` = Plot summary data. \cr
+#'     `mst` = Plot mito stress results. \cr
+#'     `gst` = Plot glyco stress results. \cr
+#'     `atp` = Plot ATP rate assay results.}
+#' @param group Plot summary data for each experimental group or data from
+#'     individual experiments separately.
+#' @param type Plot ATP rate data as a "scatter" plot or "bar" plot.
+#' @param ... Additional arguments passed along to `rates()`, including
+#'     `outliers`.
+#'
+#' @aliases plot,Herd,character-method Herd_plot
+#' @examples
+#' plot(herd, "rates")
+#' plot(herd, "rates", group = FALSE)
+#' plot(herd, "rates", group = FALSE, outliers = TRUE)
+#'
+setMethod(
+  "plot",
+  signature = c(x = "Herd", y = "character"),
+  function(
+    x,
+    y = c("rates", "summary", "mst", "gst", "atp"),
+    group = TRUE,
+    type = c("scatter", "bar"),
+    ...
+  ) {
+    z <- rlang::arg_match(y)
+    type <- rlang::arg_match(type)
+    switch(
+      z,
+      rates = plot_rates(x, group = group, ...),
+      summary = plot_summary(x),
+      mst = plot_mst(x),
+      gst = plot_gst(x),
+      atp = plot_atp(x, type = type)
+    )
+  }
+)
+
+
 # helpers -----------------------------------------------------------------
 
 plot_cells <- function(x) {
@@ -213,11 +261,15 @@ plot_rates <- function(
     unit <- NA_character_
   }
 
-  df <- rates(x, blanks = blanks, outliers = outliers, normalize = normalize)
-
   out <- dplyr::mutate(x@outliers, outlier = TRUE)
+  if (methods::is(x) == "Seahorse") {
+    df <- rates(x, blanks = blanks, outliers = outliers, normalize = normalize)
+  } else if (methods::is(x) == "Herd") {
+    df <- rates(x, outliers = outliers)
+  }
+
   df <-
-    dplyr::left_join(df, out, by = c("rate", "well")) |>
+    dplyr::left_join(df, out, by = setdiff(names(out), "outlier")) |>
     dplyr::mutate(outlier = ifelse(is.na(.data$outlier), FALSE, TRUE))
 
   p <-
