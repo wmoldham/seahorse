@@ -1,0 +1,113 @@
+---
+title: "::title::"
+author: "::author::"
+date: "`r format(Sys.time(), '%d %B %Y')`"
+output: 
+   html_document:
+     theme: default
+     toc: true
+     toc_float: true
+params:
+  wells: NA
+  stages: NA
+  cells: NA
+  data: NA
+  units: NA
+  bf: NA
+  cf: NA
+---
+
+```{r}
+#| label = setup, 
+#| include = FALSE
+
+knitr::opts_chunk$set(echo = FALSE)
+
+library(seahorse)
+ggplot2::theme_set(ggplot2::theme_bw())
+```
+
+
+## Experiment Description
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+```{r}
+#| label = wells
+
+params$wells |> 
+  dplyr::group_by(group) |>
+  gt::gt(row_group_as_column = TRUE) |> 
+  gt::tab_header(title = "Samples") |>
+  gt::tab_stubhead(label = "group") |>
+  gt::sub_missing()
+```
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+#| label = stages
+
+params$stages |> 
+  dplyr::group_by(stage) |> 
+  gt::gt(row_group_as_column = TRUE) |> 
+  gt::tab_header(title = "Design") |> 
+  gt::tab_stubhead(label = "stage") |> 
+  gt::sub_missing()
+```
+
+:::
+
+::::
+
+```{r}
+#| label = seahorse
+
+cells_list <- purrr::map(params$cells, format_cells)
+
+sea <- 
+  purrr::map2(
+    params$data, 
+    cells_list, 
+    \(x, y) Seahorse(
+      path = x, 
+      wells = wells, 
+      stages = stages, 
+      cells = y, 
+      units = params$units, 
+      bf = params$bf, 
+      cf = params$cf
+    )
+  )
+```
+
+```{r}
+#| label = headers
+
+has_cells <- !is.na(params$cells)
+```
+
+
+```{r}
+#| label = header_normalization,
+#| eval = has_cells, 
+#| results = "asis"
+
+cat("## Normalization")
+```
+
+```{r}
+#| label = normalization-plot,
+#| eval = has_cells, 
+#| results = "hide",
+#| fig.align = "center"
+
+purrr::map(
+  sea, 
+  \(x) plot(x, "cells") + ggplot2::ggtitle(filename(x))
+)
+```

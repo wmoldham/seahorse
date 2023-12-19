@@ -5,7 +5,8 @@ output:
     df_print: paged
 ---
 
-```{r, include = FALSE}
+```{r}
+#| include = FALSE
 knitr::opts_chunk$set(
   fig.align = "center", 
   collapse = TRUE,
@@ -14,7 +15,9 @@ knitr::opts_chunk$set(
 ```
 
 
-```{r setup, message = FALSE}
+```{r setup}
+#| message = FALSE
+
 library(seahorse)
 library(tidyverse)
 library(scales)
@@ -34,7 +37,8 @@ First, we will create a `seahorse` object. Since this automatically identifies
 outliers, we will remove all blank and outlier assignments prior to our 
 analysis. 
 
-```{r, message = FALSE}
+```{r}
+#| message = FALSE
 path <- 
   system.file(
     "extdata/raw_1.xlsx", 
@@ -137,6 +141,10 @@ four times the median absolute deviation for the group are identified as
 outliers.
 
 ```{r, message = FALSE, tab.cap = "Groups with outliers", rows.print = 5}
+#| message = FALSE,
+#| tab.cap = "Groups with outliers",
+#| rows.print = 5
+
 out <- 
   models |> 
   group_by(rate, group, well) |> 
