@@ -30,6 +30,8 @@ setGeneric("plot", function(x, y, ...) standardGeneric("plot"))
 #'     `atp` = Plot ATP rate assay results.}
 #' @param group Plot summary data for each experimental group or data from
 #'     individual wells separately.
+#' @param blanks Should blank wells be included in the plot?
+#' @param outliers Should outliers be included in the plot?
 #' @param normalize Divide values by normalization factor
 #' @param type Plot ATP rate data as a "scatter" plot or "bar" plot.
 #' @param ... Additional arguments passed along to `levels()` or `rates()`,
@@ -141,7 +143,7 @@ plot_levels <- function(x, group = TRUE, blanks = TRUE, outliers = TRUE) {
     df |>
     ggplot2::ggplot() +
     ggplot2::facet_wrap(
-      facet = ggplot2::vars(sensor),
+      facet = ggplot2::vars(.data$sensor),
       ncol = 1,
       scales = "free_y",
       strip.position = "left",
@@ -221,7 +223,7 @@ plot_rates <- function(
   p <-
     ggplot2::ggplot(df) +
     ggplot2::facet_wrap(
-      facet = ggplot2::vars(rate),
+      facet = ggplot2::vars(.data$rate),
       ncol = 1,
       scales = "free_y",
       strip.position = "left",

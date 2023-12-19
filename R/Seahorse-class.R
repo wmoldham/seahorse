@@ -90,7 +90,7 @@ setClass(
 #' path <- system.file("extdata/raw_1.xlsx", package = "seahorse", mustWork = TRUE)
 #' wells <- wells_ex
 #' stages <- stages_mst
-#' cells <- list(well = well, value = 20000)
+#' cells <- list(well = wells_24, value = 20000)
 #' Seahorse(path, wells, stages, cells, units = "cell", bf = 2.4, cf = 0.41)
 #'
 Seahorse <- function(

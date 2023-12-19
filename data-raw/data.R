@@ -80,3 +80,10 @@ purrr::iwalk(
     do.call("use_data", list(as.name(nm), overwrite = TRUE))
   }
 )
+
+
+# herd --------------------------------------------------------------------
+
+herd <- Herd(harold, horsea, sheldon, storm)
+
+usethis::use_data(herd, overwrite = TRUE)

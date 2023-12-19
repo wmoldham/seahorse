@@ -37,6 +37,10 @@ including \code{blanks} and \code{outliers}.}
 \item{group}{Plot summary data for each experimental group or data from
 individual wells separately.}
 
+\item{blanks}{Should blank wells be included in the plot?}
+
+\item{outliers}{Should outliers be included in the plot?}
+
 \item{normalize}{Divide values by normalization factor}
 
 \item{type}{Plot ATP rate data as a "scatter" plot or "bar" plot.}
