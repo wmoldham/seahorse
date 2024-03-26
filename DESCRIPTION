@@ -61,3 +61,5 @@ Collate:
     'report.R'
     'seahorse-package.R'
     'utils.R'
+URL: https://github.com/wmoldham/seahorse
+BugReports: https://github.com/wmoldham/seahorse/issues
