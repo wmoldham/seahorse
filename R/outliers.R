@@ -13,13 +13,13 @@ NULL
 #' @param x A `Seahorse` or `Herd` object.
 #' @param action Indicates how replacement values modify the existing values:
 #'
-#' | **action** | &nbsp;&nbsp;&nbsp; **description** |
-#' |------------|-----------------------------------|
-#' | remove   | &nbsp;&nbsp;&nbsp; set all values to `NA` |
-#' | reset   | &nbsp;&nbsp;&nbsp; assign outliers based on `findOut` |
-#' | replace | &nbsp;&nbsp;&nbsp; completely replace `outliers` with new values |
-#' | add | &nbsp;&nbsp;&nbsp; add new outlier wells |
-#' | subtract | &nbsp;&nbsp;&nbsp; remove outlier wells |
+#' | **action** | &nbsp;&nbsp;&nbsp; **description**                               |
+#' |------------|------------------------------------------------------------------|
+#' | remove     | &nbsp;&nbsp;&nbsp; set all values to `NA`                        |
+#' | reset      | &nbsp;&nbsp;&nbsp; assign outliers based on `findOut`            |
+#' | replace    | &nbsp;&nbsp;&nbsp; completely replace `outliers` with new values |
+#' | add        | &nbsp;&nbsp;&nbsp; add new outlier wells                         |
+#' | subtract   | &nbsp;&nbsp;&nbsp; remove outlier wells                          |
 #'
 #' @param value A data frame with two columns named `rate` and `well`. The
 #'     `rate` columns should contain either `OCR` or `ECAR`. The `well` column
@@ -212,7 +212,7 @@ setGeneric("findOut", function(x, ...) standardGeneric("findOut"))
 #' outliers(sheldon, "replace") <- findOut(sheldon)
 setMethod("findOut", "Seahorse", function(x, blanks = TRUE, outliers = FALSE, ...) {
   df <-
-    rates(x, blanks = TRUE, outliers = FALSE, normalize = TRUE) |>
+    rates(x, blanks = blanks, outliers = outliers, normalize = TRUE) |>
     dplyr::mutate(
       group = forcats::fct_drop(.data$group)
     )
