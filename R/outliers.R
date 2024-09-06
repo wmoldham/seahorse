@@ -241,7 +241,7 @@ setMethod("findOut", "Seahorse", function(x, blanks = TRUE, outliers = FALSE, ..
     dplyr::summarise(
       mse = mean(.data$se, na.rm = TRUE)
     ) |>
-    dplyr::group_by(.data$group) |>
+    dplyr::group_by(.data$rate, .data$type, .data$group) |>
     dplyr::mutate(outlier = msd(.data$mse, n = 3)) |>
     dplyr::filter(.data$outlier) |>
     dplyr::ungroup() |>
