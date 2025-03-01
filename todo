@@ -2,4 +2,8 @@
 
 - add findOut method for Herd class
 - finish report generating script
-
+- add README
+- for "cells" plot, nudge summary point
+- change "cells" to "norm"
+- adjust outlier algorithm for cases where there are many replicates
+- different outliers identified depending on CF/BF/PER/ECAR?

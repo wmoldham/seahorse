@@ -143,15 +143,15 @@
 <text x='508.52' y='532.38' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='6.36px' lengthAdjust='spacingAndGlyphs'>D</text>
 <text x='637.27' y='532.38' text-anchor='middle' style='font-size: 8.80px; fill: #4D4D4D; font-family: sans;' textLength='5.87px' lengthAdjust='spacingAndGlyphs'>E</text>
 <text transform='translate(13.05,272.09) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: sans;' textLength='64.19px' lengthAdjust='spacingAndGlyphs'>pmol/min/cell</text>
-<rect x='330.35' y='545.16' width='98.85' height='25.36' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
-<rect x='341.31' y='550.64' width='14.40' height='14.40' style='stroke-width: 1.07; stroke: none; fill: #F2F2F2;' />
-<rect x='342.01' y='551.35' width='12.98' height='12.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #1F78B4;' />
-<polygon points='348.51,554.80 351.14,559.36 345.87,559.36 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<rect x='387.21' y='550.64' width='14.40' height='14.40' style='stroke-width: 1.07; stroke: none; fill: #F2F2F2;' />
-<rect x='387.92' y='551.35' width='12.98' height='12.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #E31A1C;' />
-<circle cx='394.41' cy='557.84' r='1.95' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
-<text x='361.19' y='560.87' style='font-size: 8.80px; font-family: sans;' textLength='20.55px' lengthAdjust='spacingAndGlyphs'>glyco</text>
-<text x='407.09' y='560.87' style='font-size: 8.80px; font-family: sans;' textLength='16.63px' lengthAdjust='spacingAndGlyphs'>mito</text>
+<rect x='333.09' y='545.16' width='93.37' height='25.36' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+<rect x='338.57' y='550.64' width='14.40' height='14.40' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
+<rect x='339.28' y='551.35' width='12.98' height='12.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #1F78B4;' />
+<polygon points='345.77,554.80 348.40,559.36 343.13,559.36 ' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<rect x='384.48' y='550.64' width='14.40' height='14.40' style='stroke-width: 1.07; stroke: none; fill: #EBEBEB;' />
+<rect x='385.18' y='551.35' width='12.98' height='12.98' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #E31A1C;' />
+<circle cx='391.68' cy='557.84' r='1.95' style='stroke-width: 0.71; stroke: none; fill: #000000;' />
+<text x='358.45' y='560.87' style='font-size: 8.80px; font-family: sans;' textLength='20.55px' lengthAdjust='spacingAndGlyphs'>glyco</text>
+<text x='404.35' y='560.87' style='font-size: 8.80px; font-family: sans;' textLength='16.63px' lengthAdjust='spacingAndGlyphs'>mito</text>
 <text x='45.03' y='14.56' style='font-size: 13.20px; font-family: sans;' textLength='130.62px' lengthAdjust='spacingAndGlyphs'>ATP Production Rates</text>
 </g>
 </svg>

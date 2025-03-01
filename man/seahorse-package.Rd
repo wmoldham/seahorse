@@ -8,6 +8,14 @@
 \description{
 Facilitate the analysis of Seahorse bioenergetic data.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/wmoldham/seahorse}
+  \item Report bugs at \url{https://github.com/wmoldham/seahorse/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: William Oldham \email{wm.oldham@gmail.com} (\href{https://orcid.org/0000-0003-3029-4866}{ORCID})
 

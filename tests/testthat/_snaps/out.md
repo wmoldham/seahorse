@@ -3,7 +3,7 @@
     Code
       outliers(sea)
     Output
-      - OCR :  A03 A04 B05 C02 C04 D04 D05
+      - OCR :  B05 D04
 
 # outlier assignment
 
@@ -45,7 +45,7 @@
     Code
       outliers(sea)
     Output
-      - OCR :  A03 A04 B05 C04 D04 D05
+      - OCR :  B05 D04
 
 # findOut works
 
@@ -55,5 +55,5 @@
       # A tibble: 1 x 2
         rate  well 
         <fct> <chr>
-      1 OCR   C05  
+      1 OCR   C02  
 

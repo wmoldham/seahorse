@@ -70,14 +70,9 @@
     Code
       sea@outliers
     Output
-      # A tibble: 7 x 2
+      # A tibble: 2 x 2
         rate  well 
         <fct> <chr>
-      1 OCR   A03  
-      2 OCR   A04  
-      3 OCR   B05  
-      4 OCR   C02  
-      5 OCR   C04  
-      6 OCR   D04  
-      7 OCR   D05  
+      1 OCR   B05  
+      2 OCR   D04  
 
