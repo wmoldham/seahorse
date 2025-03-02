@@ -12,10 +12,10 @@ get_cell <- function(path, sheet, cell) {
 }
 
 
-get_rng <- function(path, range) {
+get_rng <- function(path, sheet, range) {
   readxl::read_excel(
     path = path,
-    sheet = "Calibration",
+    sheet = sheet,
     range = range,
     col_names = TRUE
   ) |>
@@ -51,9 +51,9 @@ init_config <- function(path) {
   config$Kc <- 1 / get_cell(path, s1, "B66")
   config$Kp <- 1 / get_cell(path, s1, "B67")
   config$Vc <- get_cell(path, s1, "B62")
-  config$pH_em <- get_rng(path, "P16:V20")
-  config$O2_ref <- get_rng(path, "B34:H38")
-  config$pH_ref <- get_rng(path, "P34:V38")
+  config$pH_em <- get_rng(path, s2, "P16:V20")
+  config$O2_ref <- get_rng(path, s2, "B34:H38")
+  config$pH_ref <- get_rng(path, s2, "P34:V38")
   config$O2_tar <- get_cell(path, s2, "B4")
   config$pH_tar <- get_cell(path, s2, "P4")
   config$vol <- get_cell(path, s1, "B77")
@@ -122,6 +122,31 @@ init_raw <- function(path, config) {
     )
   }
   df
+}
+
+
+extract_wells <- function(path) {
+  readxl::read_excel(
+    path = path,
+    sheet = "Assay Configuration",
+    range = "B11:H15",
+    col_names = TRUE
+  ) |>
+    dplyr::rename(row = "...1") |>
+    tidyr::pivot_longer(
+      -"row",
+      names_to = "col",
+      values_to = "group"
+    ) |>
+    dplyr::mutate(
+      col = stringr::str_pad(.data$col, 2, "left", "0"),
+      well = stringr::str_c(.data$row, .data$col),
+      type = ifelse(.data$group == "Background", "blank", "sample"),
+      group = stringr::str_replace(.data$group, "Background", "blank")
+    ) |>
+    dplyr::select(well, type, group) |>
+    init_wells() |>
+    suppressMessages()
 }
 
 

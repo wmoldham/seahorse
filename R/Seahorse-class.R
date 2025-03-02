@@ -132,7 +132,13 @@ setMethod("initialize", "Seahorse", function(
   .Object@time <- lubridate::mdy_hms(get_cell(path, "Operation Log", "D2"))
   .Object@config <- init_config(path)
   .Object@raw <- init_raw(path, .Object@config)
-  .Object@wells <- init_wells(wells, .Object)
+
+  if (length(wells) == 0) {
+    .Object@wells <- extract_wells(path)
+  } else {
+    .Object@wells <- init_wells(wells, .Object)
+  }
+
   .Object@stages <- init_stages(stages, .Object)
   .Object@cells <- init_cells(cells, .Object)
   .Object@units <- units
