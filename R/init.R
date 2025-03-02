@@ -144,7 +144,7 @@ extract_wells <- function(path) {
       type = ifelse(.data$group == "Background", "blank", "sample"),
       group = stringr::str_replace(.data$group, "Background", "blank")
     ) |>
-    dplyr::select(well, type, group) |>
+    dplyr::select("well", "type", "group") |>
     init_wells() |>
     suppressMessages()
 }
@@ -204,6 +204,37 @@ init_wells <- function(wells, x = NULL) {
       x
     }}() |>
     dplyr::relocate("group", .after = tidyselect::last_col())
+}
+
+
+extract_stages <- function(path) {
+  df <-
+    readxl::read_excel(
+      path = path,
+      sheet = "Assay Configuration",
+      range = "C42:G48",
+      col_names = TRUE
+    )
+
+  stage <-
+    df |>
+    tidyr::pivot_longer(
+      tidyselect::everything(),
+      names_to = "stage",
+      values_to = "value"
+    ) |>
+    dplyr::filter(stringr::str_detect(.data$value, "Cycles")) |>
+    dplyr::mutate(
+      value = as.integer(stringr::str_extract(.data$value, "\\d+"))
+    ) |>
+    purrr::pmap(\(stage, value) unlist(rep(stage, value))) |>
+    unlist() |>
+    factor(levels = names(df)) |>
+    forcats::fct_drop()
+
+  measurement <- 1:length(stage)
+
+  list(measurement = measurement, stage = stage)
 }
 
 

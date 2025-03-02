@@ -139,7 +139,14 @@ setMethod("initialize", "Seahorse", function(
     .Object@wells <- init_wells(wells, .Object)
   }
 
-  .Object@stages <- init_stages(stages, .Object)
+  if (length(stages) == 0) {
+    .Object@stages <-
+      extract_stages(path) |>
+      init_stages(.Object)
+  } else {
+    .Object@stages <- init_stages(stages, .Object)
+  }
+
   .Object@cells <- init_cells(cells, .Object)
   .Object@units <- units
   .Object@bf <- bf
